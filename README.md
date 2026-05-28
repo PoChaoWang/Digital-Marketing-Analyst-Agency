@@ -1,303 +1,304 @@
 # AI Ads Analyst Agent
 
-[繁體中文](README.md) | [English](README.en.md)
+[繁體中文](README.zh-tw.md) | [English](README.md)
 
-## 目錄
+## Table of Contents
 
 - [AI Ads Analyst Agent](#ai-ads-analyst-agent)
-  - [目錄](#目錄)
-  - [AI Ads Analyst Agent 是什麼](#ai-ads-analyst-agent-是什麼)
-  - [目前可以做到的事情](#目前可以做到的事情)
-  - [目前不能做到的事情](#目前不能做到的事情)
-  - [初期設定](#初期設定)
-    - [1. 設定 `.env`](#1-設定-env)
-    - [2. 視需要設定 `config/accounts.yml`](#2-視需要設定-configaccountsyml)
-    - [3. 設定資料來源 `config/data-sources.yml`](#3-設定資料來源-configdata-sourcesyml)
-    - [4. 不懂 MCP 時可以怎麼問 AI](#4-不懂-mcp-時可以怎麼問-ai)
-    - [5. 如果沒有 MCP，可以把 CSV 放在 `data/`](#5-如果沒有-mcp可以把-csv-放在-data)
+  - [Table of Contents](#table-of-contents)
+  - [What This MVP Is](#what-this-mvp-is)
+  - [What It Can Do Today](#what-it-can-do-today)
+  - [What It Cannot Do Today](#what-it-cannot-do-today)
+  - [Initial Setup](#initial-setup)
+    - [1. Set up `.env`](#1-set-up-env)
+      - [Where to find `.env` values](#where-to-find-env-values)
+    - [2. Optionally set up `config/accounts.yml`](#2-optionally-set-up-configaccountsyml)
+    - [3. Set up `config/data-sources.yml`](#3-set-up-configdata-sourcesyml)
+    - [4. What to ask AI if you do not understand MCP](#4-what-to-ask-ai-if-you-do-not-understand-mcp)
+    - [5. If you do not have MCP, place CSV files in `data/`](#5-if-you-do-not-have-mcp-place-csv-files-in-data)
   - [Business Context](#business-context)
   - [Production MCP Adapters](#production-mcp-adapters)
   - [Analysis Output](#analysis-output)
-  - [Glossary / 名詞對照表](#glossary--名詞對照表)
+  - [Glossary](#glossary)
   - [Skill-Based Workflow](#skill-based-workflow)
-    - [主要檔案怎麼分工](#主要檔案怎麼分工)
-    - [Agent 如何判斷要用哪個 mode](#agent-如何判斷要用哪個-mode)
-    - [如果想新增 GA4 User Journey 分析](#如果想新增-ga4-user-journey-分析)
-    - [如果想新增 LINE Ads 分析](#如果想新增-line-ads-分析)
-    - [如果想修改分析邏輯](#如果想修改分析邏輯)
+    - [Main file responsibilities](#main-file-responsibilities)
+    - [How the agent chooses modes](#how-the-agent-chooses-modes)
+    - [Adding a GA4 User Journey analysis](#adding-a-ga4-user-journey-analysis)
+    - [Adding LINE Ads analysis](#adding-line-ads-analysis)
+    - [Changing analysis logic](#changing-analysis-logic)
   - [Write Action Approval Policy](#write-action-approval-policy)
   - [Troubleshooting](#troubleshooting)
-    - [MCP tools 不可見](#mcp-tools-不可見)
-    - [Agent 說沒有可用資料來源](#agent-說沒有可用資料來源)
-    - [CSV 放在 `data/` 但 agent 沒有讀](#csv-放在-data-但-agent-沒有讀)
-    - [報告出現 `# This is TEST`](#報告出現--this-is-test)
-    - [數字和平台後台不同](#數字和平台後台不同)
-    - [Google Sheets 報表沒有建立](#google-sheets-報表沒有建立)
-  - [補充說明](#補充說明)
-    - [測試資料與正式資料](#測試資料與正式資料)
-    - [常見資料來源](#常見資料來源)
-    - [相關文件](#相關文件)
+    - [MCP tools are not visible](#mcp-tools-are-not-visible)
+    - [The agent says no data source is available](#the-agent-says-no-data-source-is-available)
+    - [CSV files are in `data/`, but the agent does not read them](#csv-files-are-in-data-but-the-agent-does-not-read-them)
+    - [The report starts with `# This is TEST`](#the-report-starts-with--this-is-test)
+    - [Numbers differ from the platform UI](#numbers-differ-from-the-platform-ui)
+    - [Google Sheets report was not created](#google-sheets-report-was-not-created)
+  - [Additional Notes](#additional-notes)
+    - [Test data and production data](#test-data-and-production-data)
+    - [Common data source types](#common-data-source-types)
+    - [Related files](#related-files)
 
-## AI Ads Analyst Agent 是什麼
+## What This MVP Is
 
-AI Ads Analyst Agent 目前是一個 MVP（Minimum Viable Product）。
+AI Ads Analyst Agent is currently an MVP, or minimum viable product.
 
-它目前的目的不是做成完整 SaaS，而是先建立一套可以安全測試、可以慢慢擴充的 AI 廣告分析工作流程。使用者可以用自然語言要求 AI 分析 Google Ads、Meta Ads、GA4，或手動匯入的 CSV 報表。
+It is not a complete SaaS product. It is a safe, expandable workflow for AI-assisted advertising analysis. A marketer can ask the agent, in natural language, to analyze Google Ads, Meta Ads, GA4, or manually exported CSV reports.
 
-這個 agent 的核心目標是：
+The main goals are:
 
-- 幫行銷人員快速整理廣告與網站成效。
-- 比較不同期間的成效變化。
-- 標示資料來源與分析邏輯，避免黑箱分析。
-- 在沒有真實 MCP 連線時，也可以用 CSV 做手動分析。
-- 預設只讀資料，不會直接修改廣告帳戶。
+- Help marketers quickly review ad and website performance.
+- Compare performance across time periods.
+- Show data sources and analysis logic, so the analysis is not a black box.
+- Allow manual CSV analysis when real MCP connections are not available.
+- Stay read-only by default and avoid changing ad accounts.
 
-## 目前可以做到的事情
+## What It Can Do Today
 
-- 分析 Google Ads、Meta Ads、GA4 的成效資料。
-- 比較過去 7 天、14 天、30 天，或其他指定期間的成效變化。
-- 產出 CPA、ROAS、CTR、CVR、CPM、CPC、花費、轉換、營收等指標。
-- 做跨平台比較，例如 Google Ads、Meta Ads 與 GA4 的整體變化。
-- 用 GA4 檢查 landing page、source / medium、campaign 的網站行為表現。
-- 把完整分析結果輸出成 Markdown 到 `output/`。
-- 在報告中顯示 Data sources、Environment Gate、Analysis Trace、Data gaps。
-- 使用 `data/` 裡的 CSV 作為正式環境的手動匯入資料來源。
-- 使用 `test/` 裡的測試資料或 Mock MCP 做 development 測試。
-- 在使用者要求時，依 Google Sheets workflow 產出報表規劃；實際建立 Sheet 仍需要 runtime 有 Google Sheets / Google Drive tools。
+- Analyze Google Ads, Meta Ads, and GA4 performance data.
+- Compare the last 7, 14, 30 days, or another user-specified period.
+- Report CPA, ROAS, CTR, CVR, CPM, CPC, spend, conversions, and revenue.
+- Compare performance across Google Ads, Meta Ads, and GA4.
+- Use GA4 to review landing pages, source / medium, campaign, and onsite behavior.
+- Write full Markdown analysis reports to `output/`.
+- Show Data sources, Environment Gate, Analysis Trace, and Data gaps in reports.
+- Use CSV files under `data/` as explicit manual data sources in production.
+- Use test data or Mock MCP under `test/` for development testing.
+- Prepare Google Sheets report output when requested; actually creating a Sheet still requires Google Sheets / Google Drive tools in the runtime.
 
-## 目前不能做到的事情
+## What It Cannot Do Today
 
-- 不能在沒有資料的情況下編造成效數字。
-- 不能自動修改 campaign、budget、bid、targeting、creative、tracking 或 status。
-- 不能自動發布、暫停、刪除廣告。
-- 不能把測試資料假裝成正式資料。
-- 不能把 CSV、BigQuery 或 SQL 資料假裝成原生平台 MCP 資料。
-- 不能在 MCP 壞掉時偷偷改讀其他資料來源。
-- 目前 `scripts/run-recipe.mjs` 主要支援 development 的 Mock MCP；production MCP 與 manual CSV 的 runner 串接仍是後續工作。
-- BigQuery production source 目前標記為 planned，之後再開發。
+- It cannot invent performance numbers when data is missing.
+- It cannot automatically modify campaigns, budgets, bids, targeting, creative, tracking, or status.
+- It cannot automatically publish, pause, or delete ads.
+- It cannot present test data as production data.
+- It cannot present CSV, BigQuery, or SQL data as native platform MCP data.
+- It cannot silently switch to another data source when MCP fails.
+- `scripts/run-recipe.mjs` currently mainly supports the development Mock MCP path; production MCP and manual CSV runner support are future work.
+- The BigQuery production source is currently marked as planned.
 
-## 初期設定
+## Initial Setup
 
-### 1. 設定 `.env`
+### 1. Set up `.env`
 
-請先複製主目錄底下的：
+Copy:
 
 ```text
 .env.example
 ```
 
-成為：
+to:
 
 ```text
 .env
 ```
 
-最重要的是設定目前環境：
+The most important settings are:
 
 ```env
 APP_ENV=production
 DATA_SOURCE_CONFIG=config/data-sources.yml
 ```
 
-常見環境：
+Common environments:
 
-- `development`：測試用，主要使用 `test/` 裡的測試資料。
-- `production`：正式用，使用正式 MCP、BigQuery / SQL，或 `data/` 裡明確指定的 CSV。
+- `development`: for testing, mainly using data under `test/`.
+- `production`: for real analysis, using production MCP, BigQuery / SQL, or explicitly provided CSV files under `data/`.
 
-請不要把 API key、OAuth secret、access token、refresh token、client secret、developer token 放進 git。
+Do not commit API keys, OAuth secrets, access tokens, refresh tokens, client secrets, or developer tokens to git.
 
-#### `.env` 的資料要去哪裡找
+#### Where to find `.env` values
 
-`.env` 裡有兩種資料：一種是環境設定，一種是平台連線資料。
+`.env` contains two kinds of values: environment settings and platform connection values.
 
-環境設定通常由這個 repo 的使用者自己決定：
+Environment settings are usually decided by the person using this repo:
 
 ```env
 APP_ENV=production
 DATA_SOURCE_CONFIG=config/data-sources.yml
 ```
 
-平台連線資料通常需要從平台後台、開發者後台、或代理商 / 工程團隊取得。行銷人員不一定會自己產生這些值，這是正常的。
+Platform connection values usually come from platform admin pages, developer dashboards, an agency, or an engineering / systems team. It is normal for marketers not to know how to generate every value.
 
-Google Ads 常見需要的資料：
+Common Google Ads values:
 
-- `GOOGLE_ADS_CUSTOMER_ID`：Google Ads 帳戶 ID，可在 Google Ads 後台右上角或帳戶切換器看到。
-- `GOOGLE_ADS_LOGIN_CUSTOMER_ID`：如果透過 MCC / manager account 管理帳戶，通常是 manager account ID。
-- `GOOGLE_ADS_CLIENT_ID` / `GOOGLE_ADS_CLIENT_SECRET`：OAuth client 資訊，通常由 Google Cloud Console 建立。
-- `GOOGLE_ADS_DEVELOPER_TOKEN`：Google Ads API developer token，通常由擁有 Google Ads API 權限的人提供。
-- `GOOGLE_ADS_REFRESH_TOKEN`：OAuth 授權後產生的 refresh token，通常需要工程或熟悉 OAuth 的人協助取得。
+- `GOOGLE_ADS_CUSTOMER_ID`: the Google Ads account ID you want to analyze. It is usually visible in the Google Ads UI near the account switcher.
+- `GOOGLE_ADS_LOGIN_CUSTOMER_ID`: usually the MCC / manager account ID when accounts are managed through a manager account.
+- `GOOGLE_ADS_CLIENT_ID` / `GOOGLE_ADS_CLIENT_SECRET`: OAuth client values, usually created in Google Cloud Console.
+- `GOOGLE_ADS_DEVELOPER_TOKEN`: Google Ads API developer token, usually provided by someone with Google Ads API access.
+- `GOOGLE_ADS_REFRESH_TOKEN`: OAuth refresh token, usually generated with help from someone familiar with OAuth.
 
-Meta Ads 常見需要的資料：
+Common Meta Ads values:
 
-- `META_AD_ACCOUNT_ID`：Meta 廣告帳戶 ID，可在 Meta Ads Manager 或 Business Settings 找到。
-- `META_BUSINESS_ID`：Business Manager / Business Portfolio ID，可在 Business Settings 找到。
-- `META_APP_ID` / `META_APP_SECRET`：Meta Developer App 的資訊，通常由有 Meta Developer 權限的人建立。
-- `META_ACCESS_TOKEN`：Meta API access token，通常由系統管理員、代理商或工程團隊提供。
+- `META_AD_ACCOUNT_ID`: the Meta ad account ID. It may look like `act_123456789` or a numeric ID and can usually be found in Ads Manager or Business Settings.
+- `META_BUSINESS_ID`: the Business Manager / Business Portfolio ID.
+- `META_APP_ID` / `META_APP_SECRET`: Meta Developer App values, usually created by someone with Meta Developer access.
+- `META_ACCESS_TOKEN`: Meta API access token, usually provided by an admin, agency, or engineering team.
 
-GA4 常見需要的資料：
+Common GA4 values:
 
-- `GA4_PROPERTY_ID`：GA4 property ID，可在 GA4 Admin 的 Property settings 找到。
-- `GA4_CREDENTIALS_JSON`：service account JSON，通常由 Google Cloud / GA4 管理者建立。
-- `GA4_CLIENT_EMAIL` / `GA4_PRIVATE_KEY`：service account 裡的欄位。如果已使用 `GA4_CREDENTIALS_JSON`，不一定需要拆開填。
-- `GA4_CLIENT_ID` / `GA4_CLIENT_SECRET` / `GA4_REFRESH_TOKEN`：OAuth 方式才可能需要。
+- `GA4_PROPERTY_ID`: GA4 property ID, available in GA4 Admin under Property settings.
+- `GA4_CREDENTIALS_JSON`: service account JSON, usually created by a Google Cloud / GA4 admin.
+- `GA4_CLIENT_EMAIL` / `GA4_PRIVATE_KEY`: fields from a service account. If `GA4_CREDENTIALS_JSON` is used, these may not need to be filled separately.
+- `GA4_CLIENT_ID` / `GA4_CLIENT_SECRET` / `GA4_REFRESH_TOKEN`: used only for OAuth-based setups.
 
-如果你不確定要填哪一種，先確認你使用的 MCP server 文件。不同 MCP server 需要的變數可能不同。
+If you are unsure which values are needed, check the MCP server documentation you plan to use. Different MCP servers may require different variables.
 
-安全提醒：
+Safety reminders:
 
-- 不要把 `.env` 內容貼到 README、GitHub issue、Slack 公開頻道或分析報告裡。
-- 如果要請人協助除錯，只提供變數名稱與是否已填，例如 `GOOGLE_ADS_REFRESH_TOKEN=present`，不要提供真實值。
-- 如果 token 曾經被貼到公開地方，請視為已外洩並重新產生。
+- Do not paste `.env` contents into README files, GitHub issues, public Slack channels, or analysis reports.
+- For debugging, show only whether a value is present or missing, such as `GOOGLE_ADS_REFRESH_TOKEN=present`. Do not show the actual value.
+- If a token was pasted publicly, treat it as leaked and regenerate it.
 
-### 2. 視需要設定 `config/accounts.yml`
+### 2. Optionally set up `config/accounts.yml`
 
-如果 `.env` 或 MCP runtime 已經管理 account ID / property ID，`config/accounts.yml` 不一定要建立。
+If `.env` or your MCP runtime already manages account IDs and property IDs, you may not need `config/accounts.yml`.
 
-`config/accounts.yml` 的用途是補充人類可讀的帳戶資訊，例如帳戶名稱、品牌、幣別、時區、備註、多帳戶對照。它不應要求你把 `.env` 裡已經填過的 ID 再手動填一次。
+`config/accounts.yml` is for human-readable account context, such as account labels, brand names, timezones, currencies, notes, or multi-account mapping. It should not require you to manually enter the same IDs already stored in `.env`.
 
-如果你需要補充這些資訊，請複製：
+If you want this extra context, copy:
 
 ```text
 config/accounts.example.yml
 ```
 
-成為：
+to:
 
 ```text
 config/accounts.yml
 ```
 
-可以填入類似這些資訊：
+Useful fields include:
 
-- account label / 顯示名稱
+- account label
 - brand / client name
 - timezone
 - currency
 - notes
 
-`config/accounts.yml` 不應上傳到 GitHub，因為它可能包含客戶帳戶資訊或內部命名。
+Do not commit `config/accounts.yml` to GitHub. It may contain client account context or internal naming.
 
-### 3. 設定資料來源 `config/data-sources.yml`
+### 3. Set up `config/data-sources.yml`
 
-請複製：
+Copy:
 
 ```text
 config/data-sources.example.yml
 ```
 
-成為：
+to:
 
 ```text
 config/data-sources.yml
 ```
 
-這個檔案用來告訴 agent：
+This file tells the agent:
 
-- 現在是 development、test 還是 production。
-- 哪些資料來源可以使用。
-- 哪些資料來源只是測試資料。
-- 哪些資料來源可以在正式分析中使用。
+- whether the current environment is development, test, or production
+- which data sources are enabled
+- which sources are test-only
+- which sources are allowed for production analysis
 
-正式環境只應使用：
+Production sources should use:
 
 - `production_allowed: true`
 - `enabled: true`
 
-### 4. 不懂 MCP 時可以怎麼問 AI
+### 4. What to ask AI if you do not understand MCP
 
-MCP 可以把 Google Ads、Meta Ads、GA4 這些平台接到 AI agent，讓 agent 直接讀取資料。
+MCP connects platforms such as Google Ads, Meta Ads, and GA4 to the AI agent, so the agent can read data directly.
 
-如果你現在沒有 MCP，這一步可以先跳過，改用下一步的 CSV 匯入方式。
+If you do not have MCP right now, you can skip this step and use CSV import in the next step.
 
-如果你不確定 MCP 是什麼、要不要設定、或自己能不能設定，可以直接問 AI。你不需要一開始就知道 command、runtime、token 這些細節。
+If you are not sure what MCP is, whether you need it, or whether you can set it up yourself, ask AI first. You do not need to understand command, runtime, or token details upfront.
 
-可以先這樣問：
-
-```text
-我想用這個專案分析 Google Ads / Meta Ads / GA4。
-我目前不確定有沒有 MCP，也不確定怎麼設定。
-請先檢查這個 repo 需要哪些設定，告訴我哪些可以自己做，哪些可能需要技術協助。
-不要要求我貼出任何 token 或 secret。
-```
-
-如果你使用 Claude Code，可以問：
+You can ask:
 
 ```text
-我使用 Claude Code。
-請檢查這個 repo 的 README.md、mcp.example.json、config/data-sources.yml 和 docs/MCP_SETUP.md。
-告訴我如果要設定 Google Ads / Meta Ads / GA4 MCP，需要準備哪些資料，以及要怎麼確認 MCP tools 是否可見。
-不要顯示或要求我貼出任何 token。
+I want to use this repo to analyze Google Ads / Meta Ads / GA4.
+I am not sure whether I have MCP or how to configure it.
+Please inspect this repo and tell me which setup steps I can do myself and which may need technical help.
+Do not ask me to paste any token or secret.
 ```
 
-如果你想先確認 `.env`，可以問：
+If you use Claude Code, you can ask:
 
 ```text
-請幫我檢查 .env 是否有必要欄位。
-只告訴我哪些變數是 present / missing，不要顯示任何真實值。
+I use Claude Code.
+Please inspect README.md, mcp.example.json, config/data-sources.yml, and docs/MCP_SETUP.md.
+Tell me what I need to prepare for Google Ads / Meta Ads / GA4 MCP, and how to check whether MCP tools are visible.
+Do not display or ask me to paste any token.
 ```
 
-如果你目前沒有 MCP、只想用 CSV，可以問：
+To check `.env` safely, ask:
 
 ```text
-我目前沒有 MCP。
-我會把 Google Ads / Meta Ads / GA4 匯出的 CSV 放在 data/。
-請告訴我 CSV 檔名與欄位需要怎麼準備，才能讓你安全分析。
+Please check whether .env has the required fields.
+Only tell me which variables are present or missing. Do not display any real values.
 ```
 
-如果你最後真的需要找工程、代理商或系統管理員協助，也可以請 AI 先幫你整理需求：
+If you do not have MCP and want to use CSV:
 
 ```text
-請根據這個 repo 產出一份 MCP 設定需求清單。
-請包含：
-- 要接的平台
-- 需要準備的 account/property ID
-- 需要的 token 或 OAuth 權限
-- Claude Code / Codex / Cursor 可能需要設定的位置
-- 設定完成後怎麼驗證 MCP tools 是否可見
-不要包含任何真實 secrets。
+I do not have MCP right now.
+I will place Google Ads / Meta Ads / GA4 exported CSV files in data/.
+Please tell me how to name the files and which columns are needed for safe analysis.
 ```
 
-如果 AI 判斷你已經有 MCP，才需要進一步設定你的 agent runtime。這一步不是填表單，而是要告訴你使用的 AI 工具：
+If you eventually need help from an engineer, agency, or system administrator, ask AI to prepare the request:
 
-- 要啟動哪一個 MCP server。
-- 要用什麼 command 啟動。
-- 要把哪些 `.env` 變數交給 MCP server。
-- 要在哪個 agent runtime 裡設定，例如 Claude Code、Claude Desktop、Codex、Cursor、Windsurf。
+```text
+Please create an MCP setup checklist for this repo.
+Include:
+- platforms to connect
+- account/property IDs needed
+- tokens or OAuth permissions needed
+- where Claude Code / Codex / Cursor may need MCP settings
+- how to verify that MCP tools are visible after setup
+Do not include any real secrets.
+```
 
-這個 repo 只提供範例：
+If AI confirms that MCP is available, then your agent runtime needs to know:
+
+- which MCP server to start
+- which command starts it
+- which `.env` variables should be passed to the server
+- where the MCP settings live in your runtime, such as Claude Code, Claude Desktop, Codex, Cursor, or Windsurf
+
+This repo only provides an example:
 
 ```text
 mcp.example.json
 ```
 
-它只是概念範例，不保證每個工具都會自動讀取。
+It is a conceptual example and is not automatically loaded by every tool.
 
-`mcp.example.json` 不會自動生效。它只是告訴你 MCP 設定通常需要 `command`、`args`、`env`。請依你使用的 agent runtime，把這些內容複製到該 runtime 的 MCP 設定檔。
+`mcp.example.json` does not take effect by itself. It only shows that MCP settings usually need `command`, `args`, and `env`. Copy the relevant ideas into your own agent runtime's MCP configuration.
 
-如果你需要請人協助，最務實的做法是把以下資訊交給對方：
+If you need help, share the following with the person helping you:
 
-- 你要接的平台：Google Ads、Meta Ads、GA4 或其他平台。
-- 你使用的 AI 工具：Claude Code、Claude Desktop、Codex、Cursor、Windsurf 等。
-- `.env` 裡已經準備好的變數名稱，不要提供真實 token。
-- 這個 repo 的 `mcp.example.json` 與 `docs/MCP_SETUP.md`。
+- the platforms you want to connect, such as Google Ads, Meta Ads, GA4, or another platform
+- the AI tool you use, such as Claude Code, Claude Desktop, Codex, Cursor, or Windsurf
+- the `.env` variable names you have prepared, without real token values
+- this repo's `mcp.example.json` and `docs/MCP_SETUP.md`
 
-設定完成後，可以請對方確認 AI 工具裡是否看得到 MCP tools。
+After setup, ask them to confirm that the AI tool can see the MCP tools.
 
-MCP 官方參考：
+Official MCP references:
 
 - Google Ads MCP: https://developers.google.com/google-ads/api/docs/developer-toolkit/mcp-server
 - Meta Ads MCP: https://www.facebook.com/business/help/1456422242197840
 - GA4 MCP: https://developers.google.com/analytics/devguides/MCP
 
-### 5. 如果沒有 MCP，可以把 CSV 放在 `data/`
+### 5. If you do not have MCP, place CSV files in `data/`
 
-如果暫時沒有 MCP，也可以把手動匯出的 CSV 放在：
+If MCP is not available, place manually exported CSV files in:
 
 ```text
 data/
 ```
 
-建議檔名寫清楚，例如：
+Use clear file names, for example:
 
 ```text
 google_ads_YYYY-MM-DD_to_YYYY-MM-DD.csv
@@ -306,101 +307,101 @@ ga4_landing_page_YYYY-MM-DD_to_YYYY-MM-DD.csv
 line_ads_campaign_YYYY-MM-DD_to_YYYY-MM-DD.csv
 ```
 
-檔名不一定要完全固定，但必須讓人看得出：
+File names do not need to follow one exact format, but humans should be able to understand:
 
-- 來源平台
-- 報表層級
-- 日期區間
+- source platform
+- report level
+- date range
 
-使用 CSV 時，agent 必須把資料標示為 `csv_export` 或 manual source，不能標示成 native MCP。
+When CSV is used, the agent must label the data as `csv_export` or manual source. It must not label CSV data as native MCP.
 
 ## Business Context
 
-如果你希望 agent 知道品牌、KPI 與客戶在意的重點，可以複製：
+If you want the agent to understand the brand, KPI, and client priorities, copy:
 
 ```text
 profile.example/business-context.md
 ```
 
-成為：
+to:
 
 ```text
 profile/business-context.md
 ```
 
-可以放入：
+You can include:
 
-- 品牌是誰
-- 主要 KPI 是 CPA、ROAS、營收、註冊、名單，或其他指標
-- 客戶最在意什麼
-- 報告語氣要偏高階摘要還是細節分析
+- what the brand is
+- main KPI, such as CPA, ROAS, revenue, signups, or leads
+- what the client cares about most
+- preferred reporting tone, such as executive summary or detailed analysis
 
-`profile/` 不應上傳到 GitHub。
+Do not commit `profile/` to GitHub.
 
-Business Context 只會影響建議的角度與溝通方式，不會取代實際資料。
+Business context only changes recommendation framing and communication. It does not replace real platform, GA4, warehouse, CSV, or MCP data.
 
 ## Production MCP Adapters
 
-如果你使用真實 MCP，需要使用 production adapter：
+If you use real MCP, use production adapters:
 
 - `connectors/google-ads-mcp.adapter.yml`
 - `connectors/meta-ads-mcp.adapter.yml`
 - `connectors/ga4-mcp.adapter.yml`
 
-這些 adapter 會告訴 agent：
+These adapters tell the agent:
 
-- 這個 MCP 是哪個平台。
-- 哪個 MCP tool 可以抓 campaign performance。
-- 回傳欄位要如何對應到 spend、clicks、conversions、revenue 等指標。
+- which platform the MCP source belongs to
+- which MCP tool can fetch campaign performance
+- how returned fields map to spend, clicks, conversions, revenue, and other metrics
 
-目前 adapter 裡有像這樣的 placeholder：
+The adapters currently contain placeholders such as:
 
 ```yaml
 tool: REPLACE_WITH_GOOGLE_ADS_CAMPAIGN_PERFORMANCE_TOOL
 ```
 
-這代表你還需要換成 MCP runtime 實際提供的 tool name。
+Replace these with the actual MCP tool names exposed by your runtime.
 
-如果 production adapter 還有 `REPLACE_WITH_...`，有兩種安全做法：
+If a production adapter still contains `REPLACE_WITH_...`, use one of these safe options:
 
-1. 先把 `config/data-sources.yml` 裡對應 source 的 `enabled` 設成 `false`。
-2. 保持 `enabled: true`，但 agent 執行時必須 fail closed，回報 MCP tool 尚未設定完成。
+1. Set the matching source in `config/data-sources.yml` to `enabled: false`.
+2. Keep `enabled: true`, but the agent must fail closed at runtime and report that the MCP tool is not configured.
 
-正式上線前建議使用第一種做法。
+Before going live, option 1 is recommended.
 
-不要修改 `connectors/mock-mcp.adapter.yml` 來接正式資料；Mock MCP 只給 development / test 使用。
+Do not modify `connectors/mock-mcp.adapter.yml` for production data. Mock MCP is only for development / test.
 
 ## Analysis Output
 
-分析結果會輸出到：
+Analysis results are written to:
 
 ```text
 output/
 ```
 
-分析語言會跟隨使用者的主要語言。例如使用者用繁體中文提問，報告就用繁體中文；使用者用英文提問，報告就用英文。
+The report language follows the user's main language. If the user asks in English, the report is in English. If the user asks in Traditional Chinese, the report is in Traditional Chinese.
 
-測試環境的檔名範例：
+Test environment filename example:
 
 ```text
 output/zzz-test-analysis-20260528-143000-cross-channel.md
 ```
 
-正式環境的檔名範例：
+Production filename example:
 
 ```text
 output/analysis-20260528-143000-google-ads.md
 ```
 
-如果是測試環境，Markdown 第一行必須明確標示：
+In test environments, the first Markdown line must clearly say:
 
 ```markdown
 # This is TEST - Cross-channel Ads Performance Analysis
 ```
 
-正式環境不需要額外標示 production。
+Production reports do not need an extra production marker.
 
-每份分析報告都應包含：
+Every report should include:
 
 - Data sources
 - Environment Gate result
@@ -411,204 +412,204 @@ output/analysis-20260528-143000-google-ads.md
 - Risks
 - Data gaps
 
-## Glossary / 名詞對照表
+## Glossary
 
-名詞、縮寫、欄位代碼與廣告格式可以放在：
+Terms, abbreviations, field codes, and ad format codes live in:
 
 ```text
 docs/GLOSSARY.md
 ```
 
-這可以幫 agent 統一用詞，避免不同人寫的 campaign name 或欄位縮寫造成誤解。
+This helps the agent use consistent wording and avoid misunderstanding campaign names or field abbreviations.
 
-例如 Meta / Facebook ad format code：
+Example Meta / Facebook ad format codes:
 
 - `car`: Carousel Ads
 - `img`: Image Ads
 - `col`: Collection Ads
 - `vid`: Video Ads
 
-如果之後有 LINE Ads、TikTok Ads 或其他平台，也可以把常見術語補進 glossary。
+If you later use LINE Ads, TikTok Ads, or another platform, add common terms to the glossary.
 
 ## Skill-Based Workflow
 
-這個 repo 把分析規則拆成幾個層次，讓之後比較好維護。
+This repo separates analysis rules into layers so they are easier to maintain.
 
-### 主要檔案怎麼分工
+### Main file responsibilities
 
-- `CLAUDE.md`：最高層操作規則，例如資料安全、環境判斷、輸出規則、是否需要使用者批准。
-- `modes/_shared.md`：所有分析都會用到的共同指標與共同規則。
-- `skills/ads-analysis/SKILL.md`：分析流程，包含要先讀哪些檔案、怎麼選資料來源、怎麼輸出。
-- `modes/analyses/`：定義「這次要做哪一種分析」。
-- `modes/platforms/`：定義「這些資料來自哪個平台，解讀時要注意什麼」。
-- `docs/GLOSSARY.md`：術語與縮寫對照。
-- `templates/`：報告格式。
+- `CLAUDE.md`: top-level operating rules, such as source safety, environment checks, output rules, and approval policy.
+- `modes/_shared.md`: shared metrics and rules used by all analyses.
+- `skills/ads-analysis/SKILL.md`: the analysis workflow, including required files, source selection, and output.
+- `modes/analyses/`: defines what kind of analysis is being performed.
+- `modes/platforms/`: defines platform-specific interpretation rules.
+- `docs/GLOSSARY.md`: term and abbreviation definitions.
+- `templates/`: report formats.
 
-### Agent 如何判斷要用哪個 mode
+### How the agent chooses modes
 
-agent 會先判斷使用者想做哪一種分析，再判斷資料來自哪些平台。
+The agent first decides what kind of analysis the user wants, then determines which platforms are involved.
 
-例如：
+For example:
 
 ```text
-請比較過去 7 天與前 7 天的成效變化
+Compare the last 7 days with the previous 7 days.
 ```
 
-這會優先使用：
+This should use:
 
 - `modes/analyses/performance-summary.md`
 
-如果資料包含 Google Ads、Meta Ads、GA4，還會使用：
+If the data includes Google Ads, Meta Ads, and GA4, it should also use:
 
 - `modes/analyses/cross-channel.md`
 - `modes/platforms/google-ads.md`
 - `modes/platforms/meta-ads.md`
 - `modes/platforms/ga4.md`
 
-簡單記法：
+Simple rule:
 
-- `modes/analyses/`：分析方法
-- `modes/platforms/`：平台知識
+- `modes/analyses/`: analysis method
+- `modes/platforms/`: platform knowledge
 
-### 如果想新增 GA4 User Journey 分析
+### Adding a GA4 User Journey analysis
 
-如果這是一種新的報告或分析方法，建議新增：
+If this is a new report or analysis method, add:
 
 ```text
 modes/analyses/user-journey.md
 ```
 
-如果還只是想先記錄想法、資料格式還不穩定，可以先放：
+If it is still exploratory and the data format is not stable, start with:
 
 ```text
 modes/backlog/user-journey.md
 ```
 
-等資料欄位與分析方式穩定後，再移到 `modes/analyses/`。
+Move it into `modes/analyses/` once the data fields and analysis method are stable.
 
-### 如果想新增 LINE Ads 分析
+### Adding LINE Ads analysis
 
-如果 LINE Ads 會變成常態資料來源，建議新增：
+If LINE Ads becomes a recurring data source, add:
 
 ```text
 modes/platforms/line-ads.md
 ```
 
-並同步考慮：
+Also consider:
 
-- 在 `docs/GLOSSARY.md` 補 LINE Ads 常見術語。
-- 在 `connectors/manual-csv.adapter.yml` 補 LINE Ads CSV 欄位判斷。
-- 在 `config/data-sources.yml` 補 LINE Ads 的資料來源設定。
+- adding LINE Ads terms to `docs/GLOSSARY.md`
+- adding LINE Ads CSV column detection to `connectors/manual-csv.adapter.yml`
+- adding a LINE Ads source entry to `config/data-sources.yml`
 
-### 如果想修改分析邏輯
+### Changing analysis logic
 
-請依照修改目的選位置：
+Change the right layer for the change:
 
-- 想改資料安全或是否可以讀某個資料夾：改 `CLAUDE.md`。
-- 想改共同指標公式：改 `modes/_shared.md`。
-- 想改成效總覽、期間比較、跨平台分析方式：改 `modes/analyses/`。
-- 想改 Google Ads、Meta Ads、GA4、LINE Ads 的平台解讀：改 `modes/platforms/`。
-- 想改術語與縮寫：改 `docs/GLOSSARY.md`。
-- 想改報告長相：改 `templates/`。
+- Data safety or folder access rules: `CLAUDE.md`
+- Shared formulas or shared metrics: `modes/_shared.md`
+- Performance summary, period comparison, or cross-channel logic: `modes/analyses/`
+- Platform interpretation for Google Ads, Meta Ads, GA4, or LINE Ads: `modes/platforms/`
+- Terms and abbreviations: `docs/GLOSSARY.md`
+- Report structure: `templates/`
 
-修改時要注意：
+When changing logic:
 
-- 不要讓 production 自動讀測試資料。
-- 不要讓 CSV 被誤標成 MCP。
-- 不要讓 agent 在資料不足時補猜數字。
-- 如果新增分析方法，最好也補對應範例問題與 data gaps。
+- Do not let production silently read test data.
+- Do not label CSV as MCP.
+- Do not let the agent guess missing numbers.
+- If you add a new analysis method, include example questions and expected data gaps.
 
 ## Write Action Approval Policy
 
-這個 agent 預設是 read-only，也就是只讀資料與產出分析。
+The agent is read-only by default. It reads data and writes analysis reports.
 
-任何會修改廣告帳戶的行為，都必須先取得使用者明確同意，例如：
+Any change to an ad account requires explicit user approval first, including:
 
-- 修改 campaign
-- 修改 budget
-- 修改 bid
-- 修改 targeting
-- 修改 creative
-- 修改 tracking
-- 暫停或啟用廣告
-- 修改 status
+- campaign changes
+- budget changes
+- bid changes
+- targeting changes
+- creative changes
+- tracking changes
+- pausing or enabling ads
+- status changes
 
-在取得同意前，agent 只能提出建議，不能直接執行。
+Before approval, the agent may only make recommendations.
 
-建立或更新 Google Sheet 報表屬於 report artifact，不等於修改廣告帳戶。但如果報表裡有建議要改 campaign 或 budget，仍然需要另行取得批准。
+Creating or updating a Google Sheet report is a report artifact write, not an ad account change. However, any recommendation that changes campaigns or budgets still requires separate approval.
 
 ## Troubleshooting
 
-### MCP tools 不可見
+### MCP tools are not visible
 
-請檢查：
+Check:
 
-- runtime 是否真的載入 MCP config。
-- MCP command 是否可執行。
-- secrets 是否有被 runtime 載入。
-- adapter 裡的 `REPLACE_WITH_...` 是否已換成實際 tool name。
+- whether the runtime loaded the MCP config
+- whether the MCP command can run
+- whether secrets are available to the runtime
+- whether `REPLACE_WITH_...` placeholders were replaced with real MCP tool names
 
-### Agent 說沒有可用資料來源
+### The agent says no data source is available
 
-請檢查：
+Check:
 
-- `.env` 的 `APP_ENV` 是否正確。
-- `config/data-sources.yml` 是否有正確的 `enabled: true`。
-- production source 是否有 `production_allowed: true`。
-- 如果使用 CSV，是否有啟用 `manual_csv_fallback` 或明確指定 CSV file path。
+- whether `.env` has the correct `APP_ENV`
+- whether `config/data-sources.yml` has the right `enabled: true` source
+- whether production sources have `production_allowed: true`
+- if using CSV, whether `manual_csv_fallback` is enabled or exact CSV file paths were provided
 
-### CSV 放在 `data/` 但 agent 沒有讀
+### CSV files are in `data/`, but the agent does not read them
 
-這通常是正確的安全行為。agent 不應自動掃描 `data/`。
+This is usually correct safety behavior. The agent should not scan `data/` automatically.
 
-請明確指定檔案，例如：
+Provide exact files, for example:
 
 ```text
-請使用 data/google_ads_2026-05-01_to_2026-05-28.csv 分析過去 28 天成效
+Please use data/google_ads_2026-05-01_to_2026-05-28.csv to analyze the last 28 days.
 ```
 
-### 報告出現 `# This is TEST`
+### The report starts with `# This is TEST`
 
-代表目前是 development 或 test 環境。請確認 `.env`：
+This means the environment is development or test. Check `.env`:
 
 ```env
 APP_ENV=production
 ```
 
-### 數字和平台後台不同
+### Numbers differ from the platform UI
 
-常見原因：
+Common reasons:
 
-- 日期區間不同
-- timezone 不同
-- attribution window 不同
-- conversion definition 不同
-- GA4 key event 與平台 conversion 不是同一件事
-- 資料延遲
-- CSV 匯出欄位不完整
+- date range mismatch
+- timezone mismatch
+- attribution window mismatch
+- conversion definition mismatch
+- GA4 key events are not the same as platform conversions
+- data delay
+- incomplete CSV export columns
 
-### Google Sheets 報表沒有建立
+### Google Sheets report was not created
 
-Google Sheets reporting skill 已定義流程，但實際建立或更新 Sheet 需要 runtime 提供 Google Sheets / Google Drive tools。如果工具不可用，agent 應先輸出 Markdown 或 structured report，不應假裝 Sheet 已建立。
+The Google Sheets reporting skill defines the workflow, but creating or updating a Sheet requires Google Sheets / Google Drive tools in the runtime. If those tools are unavailable, the agent should write Markdown or a structured report instead of pretending that a Sheet was created.
 
-## 補充說明
+## Additional Notes
 
-### 測試資料與正式資料
+### Test data and production data
 
-- `test/`：只放 development / test 測試資料。
-- `data/`：放使用者手動匯入的 CSV，production 可用，但必須 explicit。
-- `output/`：放分析結果，不提交到 GitHub。
+- `test/`: development / test data only.
+- `data/`: manually imported CSV files. Production can use this only when explicit.
+- `output/`: analysis results. Do not commit generated reports to GitHub.
 
-### 常見資料來源
+### Common data source types
 
-- Native MCP：Google Ads、Meta Ads、GA4 等平台 MCP。
-- Manual CSV：使用者手動匯出的 CSV。
-- BigQuery / SQL：之後可作為資料倉儲來源，目前 production BigQuery source 先標記為 planned。
+- Native MCP: platform MCP sources such as Google Ads, Meta Ads, or GA4.
+- Manual CSV: CSV files exported manually by users.
+- BigQuery / SQL: future warehouse sources. The production BigQuery source is currently marked as planned.
 
-### 相關文件
+### Related files
 
-- `CLAUDE.md`：agent 主要操作規則。
-- `DATA_CONTRACT.md`：資料分層與哪些檔案可提交。
-- `docs/MCP_SETUP.md`：MCP 與資料來源安全規則。
-- `docs/GLOSSARY.md`：名詞對照表。
-- `docs/GOOGLE_SHEETS_REPORTING.md`：Google Sheets 報表流程。
+- `CLAUDE.md`: main agent operating rules.
+- `DATA_CONTRACT.md`: data layering and commit rules.
+- `docs/MCP_SETUP.md`: MCP and data source safety rules.
+- `docs/GLOSSARY.md`: glossary and naming reference.
+- `docs/GOOGLE_SHEETS_REPORTING.md`: Google Sheets reporting workflow.
