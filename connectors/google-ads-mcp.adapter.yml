@@ -1,0 +1,45 @@
+id: google-ads-mcp
+description: Adapter template for a production Google Ads MCP server. Replace placeholder tool names with the actual tools exposed by your runtime.
+environment: production
+source_type: native_mcp
+platform: google_ads
+production_allowed: true
+server:
+  configured_in_runtime: true
+  notes:
+    - Do not store credentials in this file.
+    - Configure the actual MCP command and secrets in the agent runtime.
+capabilities:
+  google_ads_campaign_performance:
+    tool: REPLACE_WITH_GOOGLE_ADS_CAMPAIGN_PERFORMANCE_TOOL
+    recipe: platform-campaign-performance
+    platform: google_ads
+    date_params:
+      start: start_date
+      end: end_date
+    required_fields:
+      - date
+      - platform
+      - campaign_name
+      - impressions
+      - clicks
+      - spend
+      - currency
+      - conversions
+      - conversion_value
+    field_mapping:
+      date: date
+      platform: platform
+      campaign_name: campaign_name
+      impressions: impressions
+      clicks: clicks
+      spend: spend
+      currency: currency
+      conversions: conversions
+      revenue: conversion_value
+  google_ads_account_metadata:
+    tool: REPLACE_WITH_GOOGLE_ADS_ACCOUNT_METADATA_TOOL
+    optional: true
+  google_ads_conversion_actions:
+    tool: REPLACE_WITH_GOOGLE_ADS_CONVERSION_ACTIONS_TOOL
+    optional: true

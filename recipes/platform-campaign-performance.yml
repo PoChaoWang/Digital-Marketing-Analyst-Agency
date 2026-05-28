@@ -1,0 +1,44 @@
+id: platform-campaign-performance
+description: Summarize ad platform campaign performance for fixed metric lookups, campaign summaries, and period analysis.
+question_types:
+  - platform totals
+  - campaign performance
+  - spend / impressions / clicks lookup
+  - CPA trend
+  - ROAS trend
+supported_platforms:
+  - google_ads
+  - meta_ads
+grain:
+  - platform
+  - campaign_name
+required_fields:
+  - date
+  - platform
+  - campaign_name
+  - impressions
+  - clicks
+  - spend
+  - currency
+  - conversions
+  - conversion_value
+metrics:
+  ctr: clicks / impressions
+  cpc: spend / clicks
+  cpm: spend / impressions * 1000
+  cvr: conversions / clicks
+  cpa: spend / conversions
+  roas: conversion_value / spend
+default_output:
+  - source
+  - date_range
+  - row_count
+  - totals
+  - metrics
+  - top_campaigns_by_spend
+data_gaps_if_missing:
+  - attribution_window
+  - conversion_definition
+  - campaign_budget
+  - impression_share
+

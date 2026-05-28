@@ -1,0 +1,38 @@
+id: cross-channel-period-compare
+description: Compare Google Ads, Meta Ads, and GA4 current period vs previous period using compact normalized summaries.
+question_types:
+  - cross-channel comparison
+  - period compare
+  - blended CPA
+  - blended ROAS
+  - attribution sanity check
+supported_platforms:
+  - google_ads
+  - meta_ads
+  - ga4
+required_recipes:
+  - platform-campaign-performance
+  - ga4-landing-page-quality
+comparison:
+  default: previous_period
+metrics:
+  blended_cpa: total_spend / total_conversions
+  blended_roas: total_revenue / total_spend
+  spend_change: current_spend vs previous_spend
+  conversion_change: current_conversions vs previous_conversions
+  revenue_change: current_revenue vs previous_revenue
+  ga4_session_cvr_change: current_session_cvr vs previous_session_cvr
+default_output:
+  - source
+  - current_period
+  - previous_period
+  - platform_summaries
+  - ga4_paid_summary
+  - comparison
+data_gaps_if_missing:
+  - attribution_window
+  - conversion_definition
+  - timezone_alignment
+  - currency_alignment
+  - deduplication_logic
+

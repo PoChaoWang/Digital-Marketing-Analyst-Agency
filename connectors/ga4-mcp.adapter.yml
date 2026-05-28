@@ -1,0 +1,53 @@
+id: ga4-mcp
+description: Adapter template for a production GA4 MCP server. Replace placeholder tool names with the actual tools exposed by your runtime.
+environment: production
+source_type: native_mcp
+platform: ga4
+production_allowed: true
+server:
+  configured_in_runtime: true
+  notes:
+    - Do not store credentials in this file.
+    - Configure the actual MCP command and secrets in the agent runtime.
+capabilities:
+  ga4_landing_page_performance:
+    tool: REPLACE_WITH_GA4_LANDING_PAGE_PERFORMANCE_TOOL
+    recipe: ga4-landing-page-quality
+    platform: ga4
+    date_params:
+      start: start_date
+      end: end_date
+    required_fields:
+      - date
+      - source
+      - medium
+      - campaign
+      - landing_page
+      - sessions
+      - users
+      - engaged_sessions
+      - key_events
+      - conversions
+      - revenue
+      - currency
+    field_mapping:
+      date: date
+      source: source
+      medium: medium
+      campaign: campaign
+      platform_source: platform_source
+      landing_page: landing_page
+      sessions: sessions
+      users: users
+      engaged_sessions: engaged_sessions
+      events: events
+      key_events: key_events
+      conversions: conversions
+      revenue: revenue
+      currency: currency
+  ga4_property_metadata:
+    tool: REPLACE_WITH_GA4_PROPERTY_METADATA_TOOL
+    optional: true
+  ga4_key_events:
+    tool: REPLACE_WITH_GA4_KEY_EVENTS_TOOL
+    optional: true

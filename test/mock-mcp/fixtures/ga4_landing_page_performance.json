@@ -1,0 +1,92 @@
+{
+  "platform": "ga4",
+  "property_name": "Mock lululemon JP GA4",
+  "date_range": {
+    "start_date": "2026-04-29",
+    "end_date": "2026-05-28"
+  },
+  "timezone": "Asia/Taipei",
+  "currency": "JPY",
+  "rows": [
+    {
+      "date": "2026-05-01",
+      "source": "google",
+      "medium": "cpc",
+      "campaign": "jp_google_pmax_prospecting_women_yoga",
+      "platform_source": "google_ads",
+      "landing_page": "/ja-jp/c/women/yoga",
+      "sessions": 4100,
+      "users": 3620,
+      "engaged_sessions": 2490,
+      "events": 18600,
+      "key_events": 156,
+      "conversions": 156,
+      "revenue": 2380000,
+      "currency": "JPY"
+    },
+    {
+      "date": "2026-05-01",
+      "source": "meta",
+      "medium": "paid_social",
+      "campaign": "jp_meta_img_prospecting_men_training",
+      "platform_source": "meta_ads",
+      "landing_page": "/ja-jp/c/men/training",
+      "sessions": 2360,
+      "users": 2110,
+      "engaged_sessions": 1230,
+      "events": 8900,
+      "key_events": 18,
+      "conversions": 18,
+      "revenue": 256000,
+      "currency": "JPY"
+    },
+    {
+      "date": "2026-05-15",
+      "source": "google",
+      "medium": "cpc",
+      "campaign": "jp_google_search_brand",
+      "platform_source": "google_ads",
+      "landing_page": "/ja-jp/",
+      "sessions": 6900,
+      "users": 5980,
+      "engaged_sessions": 4720,
+      "events": 34400,
+      "key_events": 452,
+      "conversions": 452,
+      "revenue": 7010000,
+      "currency": "JPY"
+    },
+    {
+      "date": "2026-05-15",
+      "source": "meta",
+      "medium": "paid_social",
+      "campaign": "jp_meta_col_prospecting_bags",
+      "platform_source": "meta_ads",
+      "landing_page": "/ja-jp/c/accessories/bags",
+      "sessions": 1980,
+      "users": 1775,
+      "engaged_sessions": 1190,
+      "events": 9600,
+      "key_events": 76,
+      "conversions": 76,
+      "revenue": 1012000,
+      "currency": "JPY"
+    },
+    {
+      "date": "2026-05-28",
+      "source": "meta",
+      "medium": "paid_social",
+      "campaign": "jp_meta_car_prospecting_accessories",
+      "platform_source": "meta_ads",
+      "landing_page": "/ja-jp/c/accessories",
+      "sessions": 1810,
+      "users": 1630,
+      "engaged_sessions": 980,
+      "events": 7200,
+      "key_events": 36,
+      "conversions": 36,
+      "revenue": 334000,
+      "currency": "JPY"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "ads-analyst-mock-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Zero-dependency mock MCP server for AI Ads Analyst Agent development tests.",
+  "scripts": {
+    "smoke": "node smoke-test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

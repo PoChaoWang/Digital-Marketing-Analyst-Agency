@@ -1,0 +1,127 @@
+# Data source allowlist example.
+# Copy to config/data-sources.yml for local use. Do not commit customer-specific
+# project IDs, dataset names, account IDs, sheet URLs, or private file paths.
+
+environment: development
+
+rules:
+  # production must fail closed. Do not silently fall back to CSV fixtures when
+  # MCP or warehouse sources are unavailable.
+  production_fail_closed: true
+
+  # This directory is for development/test sources only. Production agents must
+  # never read it unless the user explicitly switches to a non-production env.
+  test_source_directories:
+    - test/csv/
+    - test/mock-mcp/
+    - test/public-data/
+
+  # CSV fixtures are allowed only in development/test.
+  # Production CSV is allowed only as explicit manual_csv_fallback under data/.
+  csv_allowed_environments:
+    - development
+    - test
+    - production
+
+  # Every analysis/report must print the source name, source type, environment,
+  # freshness/date range, and whether the source is production or fixture data.
+  require_source_disclosure: true
+
+sources:
+  google_ads_csv_fixture:
+    enabled: true
+    environment: development
+    source_type: csv_fixture
+    platform: google_ads
+    path: test/csv/google_ads_raw.csv
+    production_allowed: false
+
+  meta_ads_csv_fixture:
+    enabled: true
+    environment: development
+    source_type: csv_fixture
+    platform: meta_ads
+    path: test/csv/meta_ads_raw.csv
+    production_allowed: false
+
+  ga4_csv_fixture:
+    enabled: true
+    environment: development
+    source_type: csv_fixture
+    platform: ga4
+    path: test/csv/ga4_raw.csv
+    production_allowed: false
+
+  mock_mcp_development:
+    enabled: false
+    environment: development
+    source_type: mock_mcp
+    platform: cross_channel
+    path: test/mock-mcp/
+    production_allowed: false
+
+  public_data_development:
+    enabled: false
+    environment: development
+    source_type: public_sample
+    platform: cross_channel
+    path: test/public-data/
+    production_allowed: false
+
+  google_ads_mcp_production:
+    enabled: false
+    environment: production
+    source_type: native_mcp
+    platform: google_ads
+    production_allowed: true
+    required_runtime_tool: available Google Ads MCP tools
+    adapter: connectors/google-ads-mcp.adapter.yml
+
+  meta_ads_mcp_production:
+    enabled: false
+    environment: production
+    source_type: native_mcp
+    platform: meta_ads
+    production_allowed: true
+    required_runtime_tool: available Meta Ads MCP tools
+    adapter: connectors/meta-ads-mcp.adapter.yml
+
+  ga4_mcp_production:
+    enabled: false
+    environment: production
+    source_type: native_mcp
+    platform: ga4
+    production_allowed: true
+    required_runtime_tool: available GA4 MCP tools
+    adapter: connectors/ga4-mcp.adapter.yml
+
+  manual_csv_fallback:
+    enabled: false
+    environment: production
+    source_type: csv_export
+    platform: cross_channel
+    path: data/
+    production_allowed: true
+    adapter: connectors/manual-csv.adapter.yml
+    selection_mode: explicit_only
+    notes:
+      - Use only when MCP or warehouse is unavailable and the user explicitly provides CSV exports.
+      - File names do not need to follow one fixed pattern.
+      - Prefer explicit file paths or header validation before analysis.
+      - Do not silently fall back to this source.
+
+  bigquery_ads_warehouse_production:
+    enabled: false
+    environment: production
+    source_type: warehouse_mcp
+    platform: cross_channel
+    production_allowed: true
+    status: planned
+    required_runtime_tool: available BigQuery or SQL MCP tools
+    notes:
+      - Future development. Enable only after project, dataset/table mapping, runtime MCP tool, and query cost guardrails are implemented.
+    query_guardrails:
+      require_date_range: true
+      require_dry_run_or_cost_estimate: true
+      deny_select_star: true
+      prefer_summary_tables: true

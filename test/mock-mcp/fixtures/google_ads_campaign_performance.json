@@ -1,0 +1,82 @@
+{
+  "platform": "google_ads",
+  "account_name": "Mock lululemon JP Google Ads",
+  "date_range": {
+    "start_date": "2026-04-29",
+    "end_date": "2026-05-28"
+  },
+  "timezone": "Asia/Taipei",
+  "currency": "JPY",
+  "rows": [
+    {
+      "date": "2026-05-01",
+      "platform": "google_ads",
+      "campaign_name": "jp_google_pmax_prospecting_women_yoga",
+      "campaign_type": "pmax",
+      "funnel": "prospecting",
+      "product_line": "women_yoga",
+      "impressions": 125000,
+      "clicks": 3820,
+      "spend": 356000,
+      "currency": "JPY",
+      "conversions": 142,
+      "conversion_value": 2265000
+    },
+    {
+      "date": "2026-05-01",
+      "platform": "google_ads",
+      "campaign_name": "jp_google_gdn_prospecting_men_training",
+      "campaign_type": "gdn",
+      "funnel": "prospecting",
+      "product_line": "men_training",
+      "impressions": 210000,
+      "clicks": 1310,
+      "spend": 198000,
+      "currency": "JPY",
+      "conversions": 9,
+      "conversion_value": 144000
+    },
+    {
+      "date": "2026-05-15",
+      "platform": "google_ads",
+      "campaign_name": "jp_google_search_brand",
+      "campaign_type": "search",
+      "funnel": "brand",
+      "product_line": "all",
+      "impressions": 52000,
+      "clicks": 7100,
+      "spend": 248000,
+      "currency": "JPY",
+      "conversions": 438,
+      "conversion_value": 6860000
+    },
+    {
+      "date": "2026-05-15",
+      "platform": "google_ads",
+      "campaign_name": "jp_google_sho_prospecting_bags",
+      "campaign_type": "shopping",
+      "funnel": "prospecting",
+      "product_line": "bags",
+      "impressions": 88000,
+      "clicks": 2520,
+      "spend": 211000,
+      "currency": "JPY",
+      "conversions": 86,
+      "conversion_value": 1098000
+    },
+    {
+      "date": "2026-05-28",
+      "platform": "google_ads",
+      "campaign_name": "jp_google_pmax_prospecting_accessories",
+      "campaign_type": "pmax",
+      "funnel": "prospecting",
+      "product_line": "accessories",
+      "impressions": 94000,
+      "clicks": 2860,
+      "spend": 289000,
+      "currency": "JPY",
+      "conversions": 74,
+      "conversion_value": 620000
+    }
+  ]
+}

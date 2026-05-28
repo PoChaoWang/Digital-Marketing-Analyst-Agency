@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/ads-analysis-output.schema.json",
+  "title": "Ads Analysis Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_metadata",
+    "data_sources",
+    "analysis_trace",
+    "platform_summary",
+    "campaign_detail",
+    "ga4_onsite_quality",
+    "findings",
+    "recommended_actions",
+    "data_gaps"
+  ],
+  "properties": {
+    "report_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "report_name",
+        "date_range",
+        "timezone",
+        "currency",
+        "platforms",
+        "account_scope"
+      ],
+      "properties": {
+        "report_name": { "type": "string" },
+        "date_range": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start_date", "end_date"],
+          "properties": {
+            "start_date": { "type": "string", "format": "date" },
+            "end_date": { "type": "string", "format": "date" }
+          }
+        },
+        "timezone": { "type": "string" },
+        "currency": { "type": "string" },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["google_ads", "meta_ads", "ga4", "bigquery", "sql", "csv", "other"]
+          }
+        },
+        "account_scope": { "type": "string" },
+        "attribution_notes": { "type": "string" },
+        "conversion_definition": { "type": "string" }
+      }
+    },
+    "data_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "source_type", "freshness", "scope"],
+        "properties": {
+          "name": { "type": "string" },
+          "source_type": {
+            "type": "string",
+            "enum": ["native_mcp", "warehouse_mcp", "sql", "csv", "csv_export", "csv_fixture", "mock_mcp", "public_sample", "manual"]
+          },
+          "environment": { "type": "string" },
+          "production_allowed": { "type": "boolean" },
+          "freshness": { "type": "string" },
+          "scope": { "type": "string" },
+          "limitations": { "type": "string" }
+        }
+      }
+    },
+    "analysis_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_selection",
+        "rules_applied",
+        "field_mapping",
+        "metric_formulas",
+        "assumptions",
+        "decision_log"
+      ],
+      "properties": {
+        "source_selection": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source_name", "reason", "accepted"],
+            "properties": {
+              "source_name": { "type": "string" },
+              "reason": { "type": "string" },
+              "accepted": { "type": "boolean" },
+              "rejection_reason": { "type": "string" }
+            }
+          }
+        },
+        "rules_applied": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["rule_file", "purpose"],
+            "properties": {
+              "rule_file": { "type": "string" },
+              "purpose": { "type": "string" }
+            }
+          }
+        },
+        "field_mapping": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source_field", "mapped_metric"],
+            "properties": {
+              "source_field": { "type": "string" },
+              "mapped_metric": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "metric_formulas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["metric", "formula"],
+            "properties": {
+              "metric": { "type": "string" },
+              "formula": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "decision_log": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["step", "reasoning_basis", "user_review_note"],
+            "properties": {
+              "step": { "type": "string" },
+              "reasoning_basis": { "type": "string" },
+              "user_review_note": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "platform_summary": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/performance_row" }
+    },
+    "campaign_detail": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/performance_row" }
+    },
+    "ga4_onsite_quality": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "medium", "campaign", "landing_page"],
+        "properties": {
+          "source": { "type": "string" },
+          "medium": { "type": "string" },
+          "campaign": { "type": "string" },
+          "landing_page": { "type": "string" },
+          "sessions": { "type": "number" },
+          "users": { "type": "number" },
+          "engaged_sessions": { "type": "number" },
+          "engagement_rate": { "type": "number" },
+          "key_events": { "type": "number" },
+          "event_count": { "type": "number" },
+          "landing_page_cvr": { "type": "number" },
+          "revenue": { "type": "number" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "category", "observation", "inference", "reasoning_basis", "recommendation", "confidence", "risk"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["critical", "high", "medium", "low", "info"] },
+          "category": { "type": "string" },
+          "observation": { "type": "string" },
+          "inference": { "type": "string" },
+          "reasoning_basis": { "type": "string" },
+          "recommendation": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+          "risk": { "type": "string", "enum": ["high", "medium", "low"] },
+          "supporting_rows": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "recommended_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["priority", "platform", "action", "expected_impact", "risk_level", "requires_approval", "status"],
+        "properties": {
+          "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+          "platform": { "type": "string" },
+          "action": { "type": "string" },
+          "expected_impact": { "type": "string" },
+          "risk_level": { "type": "string", "enum": ["high", "medium", "low"] },
+          "requires_approval": { "type": "boolean" },
+          "status": { "type": "string", "enum": ["proposed", "approved", "rejected", "done", "blocked"] },
+          "rollback_note": { "type": "string" }
+        }
+      }
+    },
+    "data_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gap", "impact", "how_to_resolve"],
+        "properties": {
+          "gap": { "type": "string" },
+          "impact": { "type": "string" },
+          "how_to_resolve": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "performance_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform"],
+      "properties": {
+        "date": { "type": "string" },
+        "platform": { "type": "string" },
+        "account_id": { "type": "string" },
+        "campaign_id": { "type": "string" },
+        "campaign_name": { "type": "string" },
+        "ad_group_id": { "type": "string" },
+        "ad_group_name": { "type": "string" },
+        "ad_id": { "type": "string" },
+        "ad_name": { "type": "string" },
+        "spend": { "type": "number" },
+        "impressions": { "type": "number" },
+        "clicks": { "type": "number" },
+        "ctr": { "type": "number" },
+        "cpc": { "type": "number" },
+        "cpm": { "type": "number" },
+        "conversions": { "type": "number" },
+        "cvr": { "type": "number" },
+        "cpa": { "type": "number" },
+        "revenue": { "type": "number" },
+        "roas": { "type": "number" },
+        "currency": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

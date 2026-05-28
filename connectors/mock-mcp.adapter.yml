@@ -1,0 +1,68 @@
+id: mock-mcp
+description: Adapter for the local development Mock MCP server under test/mock-mcp.
+environment: development
+source_type: mock_mcp
+server:
+  command: node
+  args:
+    - test/mock-mcp/server.js
+capabilities:
+  environment_info:
+    tool: get_environment_info
+  google_ads_campaign_performance:
+    tool: get_google_ads_campaign_performance
+    recipe: platform-campaign-performance
+    platform: google_ads
+    date_params:
+      start: start_date
+      end: end_date
+    field_mapping:
+      date: date
+      platform: platform
+      campaign_name: campaign_name
+      impressions: impressions
+      clicks: clicks
+      spend: spend
+      currency: currency
+      conversions: conversions
+      revenue: conversion_value
+  meta_ads_campaign_performance:
+    tool: get_meta_ads_campaign_performance
+    recipe: platform-campaign-performance
+    platform: meta_ads
+    date_params:
+      start: start_date
+      end: end_date
+    field_mapping:
+      date: date
+      platform: platform
+      campaign_name: campaign_name
+      impressions: impressions
+      clicks: clicks
+      spend: spend
+      currency: currency
+      conversions: conversions
+      revenue: conversion_value
+  ga4_landing_page_performance:
+    tool: get_ga4_landing_page_performance
+    recipe: ga4-landing-page-quality
+    platform: ga4
+    date_params:
+      start: start_date
+      end: end_date
+    field_mapping:
+      date: date
+      source: source
+      medium: medium
+      campaign: campaign
+      platform_source: platform_source
+      landing_page: landing_page
+      sessions: sessions
+      users: users
+      engaged_sessions: engaged_sessions
+      events: events
+      key_events: key_events
+      conversions: conversions
+      revenue: revenue
+      currency: currency
+

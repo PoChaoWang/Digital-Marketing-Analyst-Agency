@@ -1,0 +1,52 @@
+id: ga4-landing-page-quality
+description: Summarize GA4 onsite quality by landing page and source/medium for paid traffic diagnostics.
+question_types:
+  - landing page quality
+  - paid traffic onsite quality
+  - GA4 conversion quality
+  - landing page CVR
+supported_platforms:
+  - ga4
+grain:
+  - source
+  - medium
+  - campaign
+  - landing_page
+required_fields:
+  - date
+  - source
+  - medium
+  - campaign
+  - platform_source
+  - landing_page
+  - sessions
+  - users
+  - engaged_sessions
+  - events
+  - key_events
+  - conversions
+  - revenue
+  - currency
+metrics:
+  engagement_rate: engaged_sessions / sessions
+  session_cvr: conversions / sessions
+  key_event_rate: key_events / sessions
+  revenue_per_session: revenue / sessions
+default_filters:
+  paid_traffic:
+    - google / cpc
+    - meta / paid_social
+default_output:
+  - source
+  - date_range
+  - row_count
+  - totals
+  - metrics
+  - top_landing_pages_by_revenue
+data_gaps_if_missing:
+  - device
+  - geography
+  - funnel_steps
+  - event_definition
+  - consent_mode_status
+

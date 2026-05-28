@@ -1,0 +1,69 @@
+id: manual-csv
+description: Adapter rules for explicit manual CSV fallback under data/. Use only when the user enables or specifies CSV exports.
+environment: production
+source_type: csv_export
+production_allowed: true
+selection:
+  mode: explicit_only
+  directory: data/
+  notes:
+    - File names may vary by team or export source.
+    - Prefer explicit file paths in config/data-sources.yml or user request.
+    - If no explicit file is provided, inspect headers and ask for confirmation before analysis.
+    - Do not blindly analyze every CSV in data/.
+    - If APP_ENV and the enabled allowlist sources do not include data/, ask the user to confirm the exact data/ files or config change before using them.
+    - Do not answer with mock, fixture, or unrelated enabled sources when the user's requested analysis clearly refers to manual CSV files in data/.
+platform_detection:
+  google_ads:
+    required_columns:
+      - date
+      - campaign_name
+      - impressions
+      - clicks
+      - spend
+      - conversions
+      - conversion_value
+  meta_ads:
+    required_columns:
+      - date
+      - campaign_name
+      - impressions
+      - clicks
+      - spend
+      - conversions
+      - conversion_value
+  ga4:
+    required_columns:
+      - date
+      - source
+      - medium
+      - campaign
+      - sessions
+      - engaged_sessions
+      - key_events
+      - landing_page
+field_mapping:
+  ad_platform:
+    date: date
+    platform: platform
+    campaign_name: campaign_name
+    impressions: impressions
+    clicks: clicks
+    spend: spend
+    currency: currency
+    conversions: conversions
+    revenue: conversion_value
+  ga4:
+    date: date
+    source: source
+    medium: medium
+    campaign: campaign
+    landing_page: landing_page
+    sessions: sessions
+    users: users
+    engaged_sessions: engaged_sessions
+    events: events
+    key_events: key_events
+    conversions: conversions
+    revenue: revenue
+    currency: currency

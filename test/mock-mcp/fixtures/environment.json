@@ -1,0 +1,18 @@
+{
+  "server_name": "ads-analyst-mock-mcp",
+  "source_type": "mock_mcp",
+  "environment": "development",
+  "production_allowed": false,
+  "fixture_version": "2026-05-28-v1",
+  "date_range": {
+    "start_date": "2026-04-29",
+    "end_date": "2026-05-28"
+  },
+  "timezone": "Asia/Taipei",
+  "currency": "JPY",
+  "limitations": [
+    "Mock data only; not connected to real Google Ads, Meta Ads, or GA4 accounts.",
+    "Rows are intentionally small and deterministic for repeatable tests.",
+    "Do not use this source for production decisions."
+  ]
+}

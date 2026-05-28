@@ -1,0 +1,92 @@
+{
+  "platform": "meta_ads",
+  "account_name": "Mock lululemon JP Meta Ads",
+  "date_range": {
+    "start_date": "2026-04-29",
+    "end_date": "2026-05-28"
+  },
+  "timezone": "Asia/Taipei",
+  "currency": "JPY",
+  "rows": [
+    {
+      "date": "2026-05-01",
+      "platform": "meta_ads",
+      "campaign_name": "jp_meta_car_prospecting_women_yoga",
+      "ad_set": "car_prospecting_women_yoga_women25_50",
+      "ad_format": "car",
+      "ad_format_label": "Carousel Ads",
+      "funnel": "prospecting",
+      "product_line": "women_yoga",
+      "impressions": 118000,
+      "clicks": 1840,
+      "spend": 221000,
+      "currency": "JPY",
+      "conversions": 54,
+      "conversion_value": 805000
+    },
+    {
+      "date": "2026-05-01",
+      "platform": "meta_ads",
+      "campaign_name": "jp_meta_img_prospecting_men_training",
+      "ad_set": "img_prospecting_men_training_men25_50",
+      "ad_format": "img",
+      "ad_format_label": "Image Ads",
+      "funnel": "prospecting",
+      "product_line": "men_training",
+      "impressions": 132000,
+      "clicks": 1510,
+      "spend": 204000,
+      "currency": "JPY",
+      "conversions": 11,
+      "conversion_value": 185000
+    },
+    {
+      "date": "2026-05-15",
+      "platform": "meta_ads",
+      "campaign_name": "jp_meta_col_prospecting_bags",
+      "ad_set": "col_prospecting_bags_women25_50",
+      "ad_format": "col",
+      "ad_format_label": "Collection Ads",
+      "funnel": "prospecting",
+      "product_line": "bags",
+      "impressions": 96500,
+      "clicks": 1720,
+      "spend": 188000,
+      "currency": "JPY",
+      "conversions": 69,
+      "conversion_value": 904000
+    },
+    {
+      "date": "2026-05-15",
+      "platform": "meta_ads",
+      "campaign_name": "jp_meta_vid_retargeting_all",
+      "ad_set": "vid_retargeting_all_7d",
+      "ad_format": "vid",
+      "ad_format_label": "Video Ads",
+      "funnel": "retargeting",
+      "product_line": "all",
+      "impressions": 72000,
+      "clicks": 1280,
+      "spend": 144000,
+      "currency": "JPY",
+      "conversions": 88,
+      "conversion_value": 1425000
+    },
+    {
+      "date": "2026-05-28",
+      "platform": "meta_ads",
+      "campaign_name": "jp_meta_car_prospecting_accessories",
+      "ad_set": "car_prospecting_accessories_women25_50",
+      "ad_format": "car",
+      "ad_format_label": "Carousel Ads",
+      "funnel": "prospecting",
+      "product_line": "accessories",
+      "impressions": 104000,
+      "clicks": 1525,
+      "spend": 176000,
+      "currency": "JPY",
+      "conversions": 32,
+      "conversion_value": 292000
+    }
+  ]
+}

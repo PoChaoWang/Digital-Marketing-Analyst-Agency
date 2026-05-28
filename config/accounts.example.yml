@@ -1,0 +1,19 @@
+accounts:
+  google_ads:
+    label: "Main Google Ads Account"
+    brand: "Example Brand"
+    timezone: "Asia/Taipei"
+    currency: "TWD"
+    notes: "Account IDs and secrets should live in .env or the MCP runtime, not here."
+  meta_ads:
+    label: "Main Meta Ads Account"
+    brand: "Example Brand"
+    timezone: "Asia/Taipei"
+    currency: "TWD"
+    notes: "Use this file for readable labels and reporting context only."
+  ga4:
+    label: "Main GA4 Property"
+    brand: "Example Brand"
+    timezone: "Asia/Taipei"
+    currency: "TWD"
+    notes: "GA4 property ID should usually be supplied through .env or runtime config."

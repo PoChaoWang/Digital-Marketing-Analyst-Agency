@@ -1,0 +1,47 @@
+id: meta-ads-mcp
+description: Adapter template for a production Meta Ads MCP server. Replace placeholder tool names with the actual tools exposed by your runtime.
+environment: production
+source_type: native_mcp
+platform: meta_ads
+production_allowed: true
+server:
+  configured_in_runtime: true
+  notes:
+    - Do not store credentials in this file.
+    - Configure the actual MCP command and secrets in the agent runtime.
+capabilities:
+  meta_ads_campaign_performance:
+    tool: REPLACE_WITH_META_ADS_CAMPAIGN_PERFORMANCE_TOOL
+    recipe: platform-campaign-performance
+    platform: meta_ads
+    date_params:
+      start: start_date
+      end: end_date
+    required_fields:
+      - date
+      - platform
+      - campaign_name
+      - impressions
+      - clicks
+      - spend
+      - currency
+      - conversions
+      - conversion_value
+    field_mapping:
+      date: date
+      platform: platform
+      campaign_name: campaign_name
+      impressions: impressions
+      clicks: clicks
+      spend: spend
+      currency: currency
+      conversions: conversions
+      revenue: conversion_value
+      ad_format: ad_format
+      ad_format_label: ad_format_label
+  meta_ads_account_metadata:
+    tool: REPLACE_WITH_META_ADS_ACCOUNT_METADATA_TOOL
+    optional: true
+  meta_ads_pixel_or_event_status:
+    tool: REPLACE_WITH_META_ADS_PIXEL_OR_EVENT_STATUS_TOOL
+    optional: true
