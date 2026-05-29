@@ -481,7 +481,7 @@ Metric policy: CVR, CPA, ROAS, ROI, conversion, and revenue calculations use GA4
 More detail:
 
 ```text
-docs/360_TABLE_WORKFLOW.md
+workflows/360-table-workflow.md
 ```
 
 ## Skill-Based Workflow
@@ -716,7 +716,6 @@ How to modify it:
 - `policies/`: split policy files referenced by `CLAUDE.md`.
 - `DATA_CONTRACT.md`: data layering and commit rules.
 - `docs/MCP_SETUP.md`: MCP and data source safety rules.
-- `docs/360_TABLE_WORKFLOW.md`: SQL-backed 360 table and period comparison workflow.
 - `docs/GLOSSARY.md`: glossary and naming reference.
 - `docs/GOOGLE_SHEETS_REPORTING.md`: Google Sheets reporting workflow.
 - `config/recurring-tasks.yml`: recurring analysis task table.
@@ -724,6 +723,7 @@ How to modify it:
 - `sql/build_360_table.sql`: readable SQL for paid media union, source priority, dedupe, and GA4 left join.
 - `scripts/combine_to_360_table.py`: applies the SQL and writes `exports/360_table.csv`.
 - `scripts/period_compare_360_table.py`: compares two periods using `exports/360_table.csv`.
+- `workflows/360-table-workflow.md`: SQL-backed 360 table and period comparison workflow.
 - `workflows/mcp-setup-wizard.md`: conversational MCP setup fallback.
 - `workflows/recurring-task-wizard.md`: conversational recurring task creation and editing flow.
 - `workflows/recurring-analysis.md`: execution flow for already-defined recurring tasks.
