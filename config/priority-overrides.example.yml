@@ -1,0 +1,9 @@
+# Optional source priority overrides for scripts/combine_to_360_table.py.
+# Default priority is MCP over CSV. Use this only when a specific platform/day
+# should prefer CSV or MCP for a documented reason.
+
+priority_overrides:
+  - date: 2026-05-20
+    platform: meta_ads
+    prefer: csv
+    reason: "MCP missing late imported conversions"
