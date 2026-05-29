@@ -713,6 +713,7 @@ How to modify it:
 ### Related files
 
 - `CLAUDE.md`: main agent operating rules.
+- `policies/`: split policy files referenced by `CLAUDE.md`.
 - `DATA_CONTRACT.md`: data layering and commit rules.
 - `docs/MCP_SETUP.md`: MCP and data source safety rules.
 - `docs/360_TABLE_WORKFLOW.md`: SQL-backed 360 table and period comparison workflow.
