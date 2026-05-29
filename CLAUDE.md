@@ -83,7 +83,7 @@ Preflight 必須完成：
 - `workflows/recurring-analysis.md`：已定義固定任務的執行流程。
 - `workflows/recurring-task-wizard.md`：對話式新增 / 修改 / 暫停 / 恢復 / 刪除固定任務。
 - `workflows/weekly-google-sheet-report.md`：Google Sheets 週報流程。
-- `docs/360_TABLE_WORKFLOW.md`：SQL-backed 360 table 與 period compare 使用說明。
+- `workflows/360-table-workflow.md`：SQL-backed 360 table 與 period compare 執行流程。
 
 ## Conflict Resolution
 
