@@ -20,6 +20,7 @@
   - [Production MCP Adapters](#production-mcp-adapters)
   - [Analysis Output](#analysis-output)
   - [Glossary](#glossary)
+  - [360 Table Workflow](#360-table-workflow)
   - [Skill-Based Workflow](#skill-based-workflow)
     - [Main file responsibilities](#main-file-responsibilities)
     - [How the agent chooses modes](#how-the-agent-chooses-modes)
@@ -76,7 +77,7 @@ The main goals are:
 - It cannot present test data as production data.
 - It cannot present CSV, BigQuery, or SQL data as native platform MCP data.
 - It cannot silently switch to another data source when MCP fails.
-- `scripts/run-recipe.mjs` currently mainly supports the development Mock MCP path; production MCP and manual CSV runner support are future work.
+- `scripts/run-recipe.mjs` is now treated as a legacy / development-only runner for Mock MCP and older recipe validation. Production-style cross-channel period comparison should use the Python + SQL 360 table workflow.
 - The BigQuery production source is currently marked as planned.
 
 ## Initial Setup
@@ -433,6 +434,56 @@ Example Meta / Facebook ad format codes:
 
 If you later use LINE Ads, TikTok Ads, or another platform, add common terms to the glossary.
 
+## 360 Table Workflow
+
+For cross-channel period comparison, the preferred data flow is:
+
+```text
+raw MCP / CSV sources -> exports/360_table.csv -> period compare JSON -> AI insight
+```
+
+The cleaning SQL lives in:
+
+```text
+sql/build_360_table.sql
+```
+
+Script language policy:
+
+- Production data cleaning, 360 table build, and period comparison use Python + SQL.
+- `scripts/run-recipe.mjs` remains legacy / development-only for Mock MCP and older recipe validation.
+- New production analysis scripts should follow the Python + SQL pattern unless there is a clear reason not to.
+
+Run the SQL-backed combiner:
+
+```bash
+python3 scripts/combine_to_360_table.py \
+  --google-ads-csv test/csv/google_ads_raw.csv \
+  --meta-ads-csv test/csv/meta_ads_raw.csv \
+  --ga4-csv test/csv/ga4_raw.csv \
+  --out exports/360_table.csv
+```
+
+Then run period compare:
+
+```bash
+python3 scripts/period_compare_360_table.py \
+  --input exports/360_table.csv \
+  --current-start 2026-05-23 \
+  --current-end 2026-05-25 \
+  --previous-start 2026-05-19 \
+  --previous-end 2026-05-21 \
+  --out exports/period_compare.json
+```
+
+Metric policy: CVR, CPA, ROAS, ROI, conversion, and revenue calculations use GA4 fields from the 360 table. Platform-reported conversions and revenue remain available for audit.
+
+More detail:
+
+```text
+docs/360_TABLE_WORKFLOW.md
+```
+
 ## Skill-Based Workflow
 
 This repo separates analysis rules into layers so they are easier to maintain.
@@ -664,9 +715,14 @@ How to modify it:
 - `CLAUDE.md`: main agent operating rules.
 - `DATA_CONTRACT.md`: data layering and commit rules.
 - `docs/MCP_SETUP.md`: MCP and data source safety rules.
+- `docs/360_TABLE_WORKFLOW.md`: SQL-backed 360 table and period comparison workflow.
 - `docs/GLOSSARY.md`: glossary and naming reference.
 - `docs/GOOGLE_SHEETS_REPORTING.md`: Google Sheets reporting workflow.
 - `config/recurring-tasks.yml`: recurring analysis task table.
+- `config/priority-overrides.example.yml`: example source priority override file.
+- `sql/build_360_table.sql`: readable SQL for paid media union, source priority, dedupe, and GA4 left join.
+- `scripts/combine_to_360_table.py`: applies the SQL and writes `exports/360_table.csv`.
+- `scripts/period_compare_360_table.py`: compares two periods using `exports/360_table.csv`.
 - `workflows/mcp-setup-wizard.md`: conversational MCP setup fallback.
 - `workflows/recurring-task-wizard.md`: conversational recurring task creation and editing flow.
 - `workflows/recurring-analysis.md`: execution flow for already-defined recurring tasks.
