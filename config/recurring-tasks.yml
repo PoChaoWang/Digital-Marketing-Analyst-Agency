@@ -1,0 +1,61 @@
+# Recurring analysis task definitions.
+# This file defines what should run on a schedule. The scheduler can be Codex
+# Automations first, and later cron or another orchestrator without changing the
+# task contract.
+
+timezone: Asia/Taipei
+default_output:
+  type: markdown
+  directory: output/
+  notify:
+    mode: output_only
+    channels:
+      slack:
+        enabled: false
+        notes: "Future option. Do not store webhook URLs or tokens in this file."
+      teams:
+        enabled: false
+        notes: "Future option. Do not store webhook URLs or tokens in this file."
+
+tasks:
+  daily_performance_delta:
+    enabled: true
+    schedule: "0 9 * * *"
+    schedule_description: "Every day at 09:00 Asia/Taipei"
+    language: zh-TW
+    analysis_intent: performance_summary
+    comparison:
+      current_period: yesterday
+      previous_period: day_before_yesterday
+    platforms:
+      - google_ads
+      - meta_ads
+      - ga4
+    question: "請比較昨天與前天的 Google Ads、Meta Ads、GA4 成效變化，列出重要變化、可能原因、風險與今天需要注意的事項。"
+    output:
+      type: markdown
+      directory: output/
+      filename_scope: daily-performance-delta
+    notify:
+      mode: output_only
+
+  weekly_performance_delta:
+    enabled: true
+    schedule: "0 9 * * MON"
+    schedule_description: "Every Monday at 09:00 Asia/Taipei"
+    language: zh-TW
+    analysis_intent: cross_channel
+    comparison:
+      current_period: last_week
+      previous_period: week_before_last
+    platforms:
+      - google_ads
+      - meta_ads
+      - ga4
+    question: "請比較上週與上上週的 Google Ads、Meta Ads、GA4 跨平台成效變化，整理 spend、traffic、conversion、CPA/ROAS、GA4 onsite quality、主要風險與本週建議。"
+    output:
+      type: markdown
+      directory: output/
+      filename_scope: weekly-performance-delta
+    notify:
+      mode: output_only
