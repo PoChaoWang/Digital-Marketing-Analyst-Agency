@@ -37,6 +37,8 @@
   - [Additional Notes](#additional-notes)
     - [Test data and production data](#test-data-and-production-data)
     - [Common data source types](#common-data-source-types)
+      - [MCP setup wizard, added 5/29](#mcp-setup-wizard-added-529)
+      - [Recurring task wizard, added 5/29](#recurring-task-wizard-added-529)
     - [Related files](#related-files)
 
 ## What This MVP Is
@@ -606,6 +608,57 @@ The Google Sheets reporting skill defines the workflow, but creating or updating
 - Manual CSV: CSV files exported manually by users.
 - BigQuery / SQL: future warehouse sources. The production BigQuery source is currently marked as planned.
 
+#### MCP setup wizard, added 5/29
+
+`workflows/mcp-setup-wizard.md` is the conversational fallback for MCP setup.
+
+It appears when an analysis or reporting task needs production MCP data, but the preflight cannot find any usable production MCP source. Typical causes include:
+
+- `config/data-sources.yml` enables Google Ads, Meta Ads, or GA4 MCP, but the runtime does not expose matching MCP tools.
+- The production adapter still contains placeholder tool names such as `REPLACE_WITH_*`.
+- The enabled source does not pass the current `APP_ENV` / Environment Gate.
+
+What it does:
+
+- Shows which data source checks already ran.
+- Asks whether the user wants help setting up MCP.
+- Walks through Google Ads, Meta Ads, GA4, and optional BigQuery / SQL setup one at a time.
+- Includes a skip option for every MCP source.
+- Collects only non-secret setup information and runtime tool mapping.
+
+How to modify it:
+
+- Edit `workflows/mcp-setup-wizard.md` to change the conversation flow, prompts, platform order, or validation checklist.
+- Edit `CLAUDE.md` only when changing when the wizard should trigger.
+- Do not add token, secret, webhook, client secret, refresh token, developer token, or private key collection to this workflow.
+- Do not modify `connectors/mock-mcp.adapter.yml` to represent production MCP.
+
+#### Recurring task wizard, added 5/29
+
+`workflows/recurring-task-wizard.md` lets non-technical users create, change, pause, resume, or delete recurring analysis tasks without editing YAML directly.
+
+It appears when the user asks for a scheduled or repeated analysis task, for example:
+
+- "Create a task that checks CPA every morning."
+- "Every Monday, compare last week and the week before."
+- "Pause the daily performance task."
+
+What it does:
+
+- Asks plain-language questions instead of asking the user to write YAML or cron.
+- Converts the answers into a proposed task definition.
+- Shows a summary before changing `config/recurring-tasks.yml`.
+- Requires explicit user confirmation before writing any task change.
+- Keeps output as `output/` Markdown by default.
+
+How to modify it:
+
+- Edit `workflows/recurring-task-wizard.md` to change the questions, task ID rules, natural-language mappings, or confirmation format.
+- Edit `config/recurring-tasks.yml` only for actual task definitions.
+- Edit `workflows/recurring-analysis.md` only for how already-defined recurring tasks run.
+- Keep notification mode as `output_only` until Slack, Teams, or email delivery is configured outside the repo.
+- Do not store Slack webhooks, Teams webhooks, tokens, or secrets in this repo.
+
 ### Related files
 
 - `CLAUDE.md`: main agent operating rules.
@@ -613,3 +666,7 @@ The Google Sheets reporting skill defines the workflow, but creating or updating
 - `docs/MCP_SETUP.md`: MCP and data source safety rules.
 - `docs/GLOSSARY.md`: glossary and naming reference.
 - `docs/GOOGLE_SHEETS_REPORTING.md`: Google Sheets reporting workflow.
+- `config/recurring-tasks.yml`: recurring analysis task table.
+- `workflows/mcp-setup-wizard.md`: conversational MCP setup fallback.
+- `workflows/recurring-task-wizard.md`: conversational recurring task creation and editing flow.
+- `workflows/recurring-analysis.md`: execution flow for already-defined recurring tasks.
