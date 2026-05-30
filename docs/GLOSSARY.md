@@ -10,6 +10,28 @@
 - 若資料中有 `ad_format_label`，優先使用該欄位；若沒有，再用本表由 code 對照。
 - 若 code 與 label 衝突，列為 data gap，不要自行修正原始資料。
 
+## Metric Definitions
+
+- Spend：指定期間內平台花費，需標明 currency。
+- Impressions：廣告曝光次數。
+- Clicks：廣告點擊次數。
+- CTR：Clicks / Impressions。
+- CPC：Spend / Clicks。
+- CPM：Spend / Impressions * 1000。
+- Conversions：依平台或 GA4 定義記錄的轉換數，必須標明 conversion definition。
+- CVR：Conversions / Clicks，或在 GA4 onsite context 中使用 Conversions / Sessions 並明確標示。
+- CPA：Spend / Conversions。
+- Revenue：指定期間內歸因或記錄的營收，需標明 source 與 currency。
+- ROAS：Revenue / Spend。
+- Frequency：Impressions / Reach，常用於 Meta Ads fatigue 判斷。
+- Sessions：GA4 session 數。
+- Users：GA4 users 數。
+- Engaged sessions：GA4 engaged sessions 數。
+- Engagement rate：Engaged sessions / Sessions。
+- Key events：GA4 key events，舊稱 conversions；需標明事件名稱。
+- Event count：GA4 event 觸發次數。
+- Landing page CVR：Landing page sessions 到 key event 或 purchase 的 conversion rate。
+
 ## Report Terminology
 
 本節定義報表中的固定用語，避免不同分析輸出使用不同名稱。分析與報表產出時應優先使用 `Preferred wording`。
