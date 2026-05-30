@@ -16,10 +16,10 @@
     - [3. 設定資料來源 `config/data-sources.yml`](#3-設定資料來源-configdata-sourcesyml)
     - [4. 不懂 MCP 時可以怎麼問 AI](#4-不懂-mcp-時可以怎麼問-ai)
     - [5. 如果沒有 MCP，可以把 CSV 放在 `data/`](#5-如果沒有-mcp可以把-csv-放在-data)
-  - [Business Context](#business-context)
-  - [Production MCP Adapters](#production-mcp-adapters)
+    - [6. Business Context](#6-business-context)
+    - [7. Production MCP Adapters](#7-production-mcp-adapters)
+    - [8. Glossary / 名詞對照表](#8-glossary--名詞對照表)
   - [Analysis Output](#analysis-output)
-  - [Glossary / 名詞對照表](#glossary--名詞對照表)
   - [360 Table Workflow](#360-table-workflow)
   - [Skill-Based Workflow](#skill-based-workflow)
     - [主要檔案怎麼分工](#主要檔案怎麼分工)
@@ -240,6 +240,14 @@ MCP 可以把 Google Ads、Meta Ads、GA4 這些平台接到 AI agent，讓 agen
 只告訴我哪些變數是 present / missing，不要顯示任何真實值。
 ```
 
+如果你在 IDE 裡想直接走指令式流程，可以先輸入：
+
+- `/ma-start`：第一次設定或檢查目前環境
+- `/ma-method`：新增或修改分析方法
+- `/ma-test`：做非破壞性驗證
+
+這些指令會由 agent 依規則導引，不需要你先懂 repo 結構。
+
 如果你目前沒有 MCP、只想用 CSV，可以問：
 
 ```text
@@ -318,7 +326,7 @@ line_ads_campaign_YYYY-MM-DD_to_YYYY-MM-DD.csv
 
 使用 CSV 時，agent 必須把資料標示為 `csv_export` 或 manual source，不能標示成 native MCP。
 
-## Business Context
+### 6. Business Context
 
 如果你希望 agent 知道品牌、KPI 與客戶在意的重點，可以複製：
 
@@ -343,7 +351,7 @@ profile/business-context.md
 
 Business Context 只會影響建議的角度與溝通方式，不會取代實際資料。
 
-## Production MCP Adapters
+### 7. Production MCP Adapters
 
 如果你使用真實 MCP，需要使用 production adapter：
 
@@ -373,6 +381,25 @@ tool: REPLACE_WITH_GOOGLE_ADS_CAMPAIGN_PERFORMANCE_TOOL
 正式上線前建議使用第一種做法。
 
 不要修改 `connectors/mock-mcp.adapter.yml` 來接正式資料；Mock MCP 只給 development / test 使用。
+
+### 8. Glossary / 名詞對照表
+
+名詞、縮寫、欄位代碼與廣告格式可以放在：
+
+```text
+docs/GLOSSARY.md
+```
+
+這可以幫 agent 統一用詞，避免不同人寫的 campaign name 或欄位縮寫造成誤解。
+
+例如 Meta / Facebook ad format code：
+
+- `car`: Carousel Ads
+- `img`: Image Ads
+- `col`: Collection Ads
+- `vid`: Video Ads
+
+如果之後有 LINE Ads、TikTok Ads 或其他平台，也可以把常見術語補進 glossary。
 
 ## Analysis Output
 
@@ -414,25 +441,6 @@ output/analysis-20260528-143000-google-ads.md
 - Recommendations
 - Risks
 - Data gaps
-
-## Glossary / 名詞對照表
-
-名詞、縮寫、欄位代碼與廣告格式可以放在：
-
-```text
-docs/GLOSSARY.md
-```
-
-這可以幫 agent 統一用詞，避免不同人寫的 campaign name 或欄位縮寫造成誤解。
-
-例如 Meta / Facebook ad format code：
-
-- `car`: Carousel Ads
-- `img`: Image Ads
-- `col`: Collection Ads
-- `vid`: Video Ads
-
-如果之後有 LINE Ads、TikTok Ads 或其他平台，也可以把常見術語補進 glossary。
 
 ## 360 Table Workflow
 

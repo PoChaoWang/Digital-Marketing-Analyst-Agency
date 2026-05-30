@@ -240,6 +240,14 @@ Please check whether .env has the required fields.
 Only tell me which variables are present or missing. Do not display any real values.
 ```
 
+If you want to use the command-style flow directly in the IDE, start with:
+
+- `/ma-start` for first-time setup or an environment check
+- `/ma-method` to add or modify an analysis method
+- `/ma-test` for a non-destructive validation run
+
+The agent will guide the flow based on those commands, so you do not need to understand the repo structure first.
+
 If you do not have MCP and want to use CSV:
 
 ```text
