@@ -48,6 +48,11 @@
 - [ ] `policies/environment-gate.md`：主要定義
 - [ ] `modes/_shared.md`：若有相關原則需要更新
 
+### 新增 /ma-* 指令
+- [ ] `policies/interaction-command-policy.md`：登記指令名稱與路由
+- [ ] `modes/commands/`：新增對應指令流程檔案
+- [ ] `CLAUDE.md`：Policy Index 和 Mode And Workflow Index 各加一行
+
 ---
 
 ## 核心文件異動原則
