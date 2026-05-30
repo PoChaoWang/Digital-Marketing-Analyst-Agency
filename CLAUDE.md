@@ -66,14 +66,17 @@ Context 載入：
 - `policies/routing.md`：analysis mode、platform mode、backlog mode 與 glossary routing。
 - `policies/environment-gate.md`：`APP_ENV`、`DATA_SOURCE_CONFIG`、allowlist、MCP/CSV/warehouse 使用門檻。
 - `policies/recipe-runner-policy.md`：recipe runner、Python + SQL、360 table 與 GA4 metric source 規則。
-- `policies/workflows.md`：Ads analysis、Google Sheets reporting、recurring analysis 的執行順序。
 - `policies/output-artifacts.md`：Markdown artifact、命名、template、Data sources / Analysis Trace 要求。
 - `policies/mcp-policy.md`：MCP source of truth、production adapter、setup wizard 與 secrets 限制。
 - `policies/approval-flow.md`：任何 campaign / budget / bid / targeting / creative / tracking / status write action 的 approval flow。
+- `policies/interaction-command-policy.md`：IDE 內 `/ma-*` 對話指令、首次導覽與狀態規則。
 
 ## Mode And Workflow Index
 
 - `modes/_shared.md`：所有分析共用定義與 guardrails。
+- `modes/commands/ma-start.md`：`/ma-start` 的首次導覽與環境檢查流程。
+- `modes/commands/ma-method.md`：`/ma-method` 的方法新增與修改流程。
+- `modes/commands/ma-test.md`：`/ma-test` 的驗證與 smoke test 流程。
 - `modes/analyses/performance-summary.md`：成效總覽、週報、月報、過去 N 天成效。
 - `modes/analyses/landing-page-quality.md`：landing page、onsite quality、paid traffic CVR。
 - `modes/analyses/cross-channel.md`：跨平台比較、blended CPA/ROAS、channel allocation。
@@ -98,4 +101,3 @@ Context 載入：
 6. `templates/` 與 docs 中的格式或參考資料。
 
 任何 campaign、budget、bid、targeting、creative、tracking、status 的 write action，都必須先取得使用者明確確認。
-
