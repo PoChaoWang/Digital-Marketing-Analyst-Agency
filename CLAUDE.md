@@ -39,24 +39,25 @@
 
 ## Mandatory Analysis Preflight
 
-任何 CLI、agent runtime、subagent、automation runner 或人工觸發的分析 / 報表任務，在 fetch data、讀取 CSV、呼叫 MCP、查 warehouse、產生分析或寫報表之前，都必須先執行本 preflight。只有使用者明確說「不用 preflight」、「跳過 preflight」或等價指令時，才可略過。
+強制讀取（每次，無例外）：
+1. 本文件
+2. `policies/environment-gate.md`
+3. `policies/routing.md` → 執行任務識別，輸出本次需要載入的文件清單
 
-Preflight 必須完成：
+依 routing 結果載入（只讀 routing 指定的）：
+4. 相關 analysis mode（cross-channel / performance-summary / landing-page-quality）
+5. 相關 platform mode（google-ads / meta-ads / ga4，依任務提及的平台）
+6. 相關 workflow 或 policy（approval-flow / recipe-runner-policy / workflows，依任務類型）
 
-1. 讀取本文件。
-2. 讀取 `policies/environment-gate.md`、`policies/routing.md`、`policies/output-artifacts.md`、`policies/mcp-policy.md`。
-3. 讀取 `policies/business-context.md`、`policies/language-policy.md`、`policies/recipe-runner-policy.md`、`policies/workflows.md`、`policies/approval-flow.md` 中與任務相關的規則。
-4. 讀取 `skills/ads-analysis/SKILL.md`。
-5. 讀取 `modes/_shared.md`、任務相關 analysis modes 與 platform modes。
-6. 重新讀取 `config/data-sources.yml` 或 `DATA_SOURCE_CONFIG` 指定檔案；不得沿用上一輪資料來源狀態。
-7. 確認 `APP_ENV`；若未設定，預設為 `development` 並在輸出揭露。
-8. 確認資料來源通過 allowlist / Environment Gate。
-9. 若 `profile/business-context.md` 存在，讀取品牌、KPI 與客戶在意事項；若不存在，不阻擋分析，只在 Data Gaps 標記 business context not provided。
-10. 確認 output artifact path 在 `output/`。
-11. 確認 output language 與對應 template。
-12. 確認終端機或 chat 回覆只提供簡短摘要與 output file path，不放完整分析。
+Context 載入：
+7. `config/data-sources.yml`（每次重新讀，不沿用上次）
+8. `profile/business-context.md`（若存在）
 
-若任何項目未完成，必須停止分析並先完成 preflight。Preflight 結果必須寫入 output artifact 的 `Environment Gate Result` 或 `Analysis Trace`。
+環境確認：
+9. 確認 APP_ENV，未設定預設 development 並揭露
+10. 確認資料來源通過 allowlist
+11. 確認 output path 在 `output/`
+12. 確認 output language 與 template
 
 ## Policy Index
 
@@ -97,3 +98,4 @@ Preflight 必須完成：
 6. `templates/` 與 docs 中的格式或參考資料。
 
 任何 campaign、budget、bid、targeting、creative、tracking、status 的 write action，都必須先取得使用者明確確認。
+
