@@ -18,3 +18,4 @@ tmp/recipe-results/*
 *.log
 prompt.md
 .DS_Store
+note.md
