@@ -1,23 +1,91 @@
-# Routing Policy
+# Routing Protocol
 
-所有任務都先讀 `modes/_shared.md`，再依需求讀取 active analysis modes 與 platform modes。Routing 順序是：先判斷 analysis intent，再判斷 involved platforms。
+本文件是可執行的決策協議，不是參考規則。Agent 讀完後必須依序執行 Step 1–4，並輸出 Routing Result。未列入 Routing Result 的文件，本次任務不讀。
 
-MVP active analysis modes 只包含目前有 recipe 支援、可重複執行的三條 workflow：
+---
 
-- 成效總覽、週報、月報、過去 N 天成效：讀 `modes/analyses/performance-summary.md`。
-- landing page、onsite quality、paid traffic CVR：讀 `modes/analyses/landing-page-quality.md`。
-- 跨平台比較、blended CPA/ROAS、channel allocation：讀 `modes/analyses/cross-channel.md`。
+## 前置：每次都載入
 
-`modes/backlog/` 是尚未 recipe-backed 的分析假設與未來擴充素材，不是 MVP active workflow。除非使用者明確要求參考 backlog，否則不要把 backlog mode 當作正式執行步驟。
+在執行 Step 1 之前，無條件載入：
 
-- 一般廣告、GA4、跨平台分析任務：使用 `skills/ads-analysis/SKILL.md`，並先讀對應 `modes/analyses/`，再讀對應 `modes/platforms/`。
-- 需要產出 Google Sheet 報表：先使用 `skills/ads-analysis/SKILL.md` 產出結構化分析，再使用 `skills/google-sheets-reporting/SKILL.md`，並依 `workflows/weekly-google-sheet-report.md` 執行。
-- CPA 上升、轉換成本過高、conversion efficiency：若可用現有 recipe 回答，使用 `modes/analyses/performance-summary.md` 或 `modes/analyses/cross-channel.md`；若需要更深診斷，標記為 backlog capability，參考 `modes/backlog/cpa-diagnosis.md` 前先告知使用者目前尚非 active workflow。
-- 預算 pacing、budget allocation、reallocation hypothesis：若可用現有 recipe 回答，使用 `modes/analyses/performance-summary.md` 或 `modes/analyses/cross-channel.md`；若需要 pacing 專用診斷，標記為 backlog capability，參考 `modes/backlog/budget-pacing.md` 前先告知使用者目前尚非 active workflow。
-- creative fatigue、素材疲乏、frequency/CTR/CPA trend：若可用現有 recipe 回答，使用 `modes/analyses/performance-summary.md`；若需要素材疲乏專用診斷，標記為 backlog capability，參考 `modes/backlog/creative-fatigue.md` 前先告知使用者目前尚非 active workflow。
-- conversion tracking、attribution mismatch、UTM/gclid/fbclid、GA4 與平台數字不一致：若可用現有 recipe 回答，使用 `modes/analyses/landing-page-quality.md` 或 `modes/analyses/cross-channel.md`；若需要 tracking 專用診斷，標記為 backlog capability，參考 `modes/backlog/attribution-tracking.md` 前先告知使用者目前尚非 active workflow。
-- Google Ads 資料或 Google Ads 平台特有問題：讀 `modes/platforms/google-ads.md`。
-- Meta Ads 資料或 Meta Ads 平台特有問題：讀 `modes/platforms/meta-ads.md`。
-- GA4、onsite behavior、traffic acquisition、landing page、conversion tracking、attribution sanity check 資料：讀 `modes/platforms/ga4.md`。
-- 沒有 native MCP 的廣告平台或資料來源：先通過 Environment Gate，確認 `APP_ENV` 與 `config/data-sources.yml` allowlist，再依允許來源檢查 BigQuery / SQL warehouse / uploaded CSV data。
-- 遇到 campaign、ad set、ad、creative、UTM 或欄位縮寫時，讀 `docs/GLOSSARY.md` 做名詞對照；找不到的縮寫要標記為 unknown term。
+- `modes/_shared.md`
+- `skills/ads-analysis/SKILL.md`
+
+---
+
+## Step 1：識別 Analysis Intent
+
+對照使用者描述，選出**一個**主要 intent。若同時符合多個，選最具體的那個（例如「比較前後成效」比「成效總覽」更具體，選 cross-channel）。
+
+| Intent | 觸發關鍵字 | 載入 |
+|--------|-----------|------|
+| `performance-summary` | 週報、月報、成效、過去N天、overview、總覽、這週、上週 | `modes/analyses/performance-summary.md` |
+| `cross-channel` | 比較、前後、period、vs、跨平台、360、channel allocation、blended | `modes/analyses/cross-channel.md` |
+| `landing-page` | landing page、CVR、onsite、品質、跳出、頁面、到達頁 | `modes/analyses/landing-page-quality.md` |
+
+**若無法對應任何 intent：** 停止，詢問使用者「請問這次任務的主要目標是什麼？」，不要猜測，不要繼續執行。
+
+---
+
+## Step 2：識別 Involved Platforms
+
+可複選。依使用者描述或資料來源判斷。
+
+| 平台 | 觸發關鍵字 | 載入 |
+|------|-----------|------|
+| Google Ads | google ads、關鍵字、搜尋廣告、gclid、campaign（Google 脈絡） | `modes/platforms/google-ads.md` |
+| Meta Ads | meta、facebook、fb、ig、instagram、素材、fbclid | `modes/platforms/meta-ads.md` |
+| GA4 | ga4、網站、session、轉換、landing page、traffic acquisition、attribution | `modes/platforms/ga4.md` |
+
+**特例：** intent 為 `cross-channel` 時，預設載入全部三個平台 mode，除非使用者明確指定只看特定平台。
+
+---
+
+## Step 3：識別 Special Handling
+
+依任務特徵追加載入，可複選。
+
+| 條件 | 追加載入 |
+|------|---------|
+| 任務涉及 period compare、360 table、前後比較、跨期分析 | `policies/recipe-runner-policy.md`、`workflows/360-table-workflow.md` |
+| 任務需要輸出 Google Sheets 報表 | `skills/google-sheets-reporting/SKILL.md`、`workflows/weekly-google-sheet-report.md` |
+| 任務涉及任何 campaign / budget / bid / targeting / creative / tracking / status 寫入 | `policies/approval-flow.md` |
+| 遇到不認識的縮寫或術語 | `docs/GLOSSARY.md`（找不到的術語標記為 `unknown term`） |
+| 沒有 native MCP 的資料來源（非 Google Ads / Meta Ads / GA4 MCP） | 通過 Environment Gate 後，依 `config/data-sources.yml` allowlist 確認可用來源 |
+
+**遇到不認識的縮寫或是術語:** 不要亂猜，跟使用者做詢問，有必要的話加入到 glossary。
+
+
+### Backlog Capabilities（需明確告知使用者）
+
+以下情境有對應的 backlog 分析模式，但**尚未有 recipe 支援**，不是 MVP active workflow。若任務觸發以下情境，必須先告知使用者「目前此分析尚為 backlog capability，無法自動執行，是否仍要參考？」，取得確認後才載入。
+
+| 情境 | Backlog 文件 | 可用現有 recipe 部分回答的替代方案 |
+|------|-------------|----------------------------------|
+| CPA 上升、轉換成本過高、conversion efficiency 深度診斷 | `modes/backlog/cpa-diagnosis.md` | `performance-summary` 或 `cross-channel` |
+| 預算 pacing、budget allocation、reallocation 深度診斷 | `modes/backlog/budget-pacing.md` | `performance-summary` 或 `cross-channel` |
+| Creative fatigue、素材疲乏、frequency/CTR/CPA trend 深度診斷 | `modes/backlog/creative-fatigue.md` | `performance-summary` |
+| Conversion tracking、attribution mismatch、UTM/gclid/fbclid、GA4 與平台數字不一致深度診斷 | `modes/backlog/attribution-tracking.md` | `landing-page` 或 `cross-channel` |
+
+---
+
+## Step 4：輸出 Routing Result
+
+完成 Step 1–3 後，輸出以下格式，再繼續執行任務。此清單同時寫入 output artifact 的 `Analysis Trace`。
+
+```
+Routing Result
+──────────────
+Intent:          [cross-channel | performance-summary | landing-page]
+Platforms:       [google-ads] [meta-ads] [ga4]
+Files to load:   
+  - modes/_shared.md
+  - skills/ads-analysis/SKILL.md
+  - modes/analyses/[對應 intent]
+  - modes/platforms/[對應平台 × N]
+  - [Step 3 追加的文件，若有]
+Special:         [backlog capability 告知 / approval required / glossary lookup，若有]
+──────────────
+```
+
+**未列入此清單的文件，本次任務不讀。**
