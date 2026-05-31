@@ -4,395 +4,113 @@
 
 ## Table of Contents
 
-- [AI Ads Analyst Agent](#ai-ads-analyst-agent)
-  - [Table of Contents](#table-of-contents)
-  - [What This MVP Is](#what-this-mvp-is)
-  - [What It Can Do Today](#what-it-can-do-today)
-  - [What It Cannot Do Today](#what-it-cannot-do-today)
-  - [Initial Setup](#initial-setup)
-    - [1. Set up `.env`](#1-set-up-env)
-      - [Where to find `.env` values](#where-to-find-env-values)
-    - [2. Optionally set up `config/accounts.yml`](#2-optionally-set-up-configaccountsyml)
-    - [3. Set up `config/data-sources.yml`](#3-set-up-configdata-sourcesyml)
-    - [4. What to ask AI if you do not understand MCP](#4-what-to-ask-ai-if-you-do-not-understand-mcp)
-    - [5. If you do not have MCP, place CSV files in `data/`](#5-if-you-do-not-have-mcp-place-csv-files-in-data)
-  - [Business Context](#business-context)
-  - [Production MCP Adapters](#production-mcp-adapters)
-  - [Analysis Output](#analysis-output)
-  - [Glossary](#glossary)
-  - [360 Table Workflow](#360-table-workflow)
-  - [Skill-Based Workflow](#skill-based-workflow)
-    - [Main file responsibilities](#main-file-responsibilities)
-    - [How the agent chooses modes](#how-the-agent-chooses-modes)
-    - [Adding a GA4 User Journey analysis](#adding-a-ga4-user-journey-analysis)
-    - [Adding LINE Ads analysis](#adding-line-ads-analysis)
-    - [Changing analysis logic](#changing-analysis-logic)
-  - [Write Action Approval Policy](#write-action-approval-policy)
-  - [Troubleshooting](#troubleshooting)
-    - [MCP tools are not visible](#mcp-tools-are-not-visible)
-    - [The agent says no data source is available](#the-agent-says-no-data-source-is-available)
-    - [CSV files are in `data/`, but the agent does not read them](#csv-files-are-in-data-but-the-agent-does-not-read-them)
-    - [The report starts with `# This is TEST`](#the-report-starts-with--this-is-test)
-    - [Numbers differ from the platform UI](#numbers-differ-from-the-platform-ui)
-    - [Google Sheets report was not created](#google-sheets-report-was-not-created)
-  - [Additional Notes](#additional-notes)
-    - [Test data and production data](#test-data-and-production-data)
-    - [Common data source types](#common-data-source-types)
-      - [MCP setup wizard, added 5/29](#mcp-setup-wizard-added-529)
-      - [Recurring task wizard, added 5/29](#recurring-task-wizard-added-529)
-    - [Related files](#related-files)
+- [What AI Ads Analyst Agent Is](#what-ai-ads-analyst-agent-is)
+- [What It Can Do Today](#what-it-can-do-today)
+- [What It Cannot Do Today](#what-it-cannot-do-today)
+- [Initial Setup](#initial-setup)
+- [Analysis Output](#analysis-output)
+- [Skill-Based Workflow](#skill-based-workflow)
+  - [Main File Responsibilities](#main-file-responsibilities)
+  - [How the Agent Chooses Modes](#how-the-agent-chooses-modes)
+  - [Adding a GA4 User Journey Analysis](#adding-a-ga4-user-journey-analysis)
+  - [Adding LINE Ads Analysis](#adding-line-ads-analysis)
+  - [Changing Analysis Logic](#changing-analysis-logic)
+- [Write Action Approval Policy](#write-action-approval-policy)
+- [Troubleshooting](#troubleshooting)
+  - [MCP tools are not visible](#mcp-tools-are-not-visible)
+  - [The agent says no data source is available](#the-agent-says-no-data-source-is-available)
+  - [CSV files are in `data/`, but the agent does not read them](#csv-files-are-in-data-but-the-agent-does-not-read-them)
+  - [The report starts with `# This is TEST`](#the-report-starts-with--this-is-test)
+  - [Numbers differ from the platform UI](#numbers-differ-from-the-platform-ui)
+  - [Google Sheets report was not created](#google-sheets-report-was-not-created)
+- [Additional Notes](#additional-notes)
+  - [Test data and production data](#test-data-and-production-data)
+  - [Common data source types](#common-data-source-types)
+  - [Related files](#related-files)
 
-## What This MVP Is
+## What AI Ads Analyst Agent Is
 
 AI Ads Analyst Agent is currently an MVP, or minimum viable product.
 
-It is not a complete SaaS product. It is a safe, expandable workflow for AI-assisted advertising analysis. A marketer can ask the agent, in natural language, to analyze Google Ads, Meta Ads, GA4, or manually exported CSV reports.
+Its goal is not to become a complete SaaS product yet. The purpose is to establish a safe, testable, and gradually extensible AI advertising analysis workflow. Users can ask AI, in natural language, to analyze Google Ads, Meta Ads, GA4, or manually imported CSV reports.
 
-The main goals are:
+The core goals are:
 
-- Help marketers quickly review ad and website performance.
-- Compare performance across time periods.
-- Show data sources and analysis logic, so the analysis is not a black box.
-- Allow manual CSV analysis when real MCP connections are not available.
-- Stay read-only by default and avoid changing ad accounts.
+- Help marketers quickly summarize advertising and website performance.
+- Compare performance changes across different time periods.
+- Label data sources and analysis logic to avoid black-box analysis.
+- Support manual CSV analysis when real MCP connections are unavailable.
+- Stay read-only by default and avoid changing ad accounts directly.
 
 ## What It Can Do Today
 
 - Analyze Google Ads, Meta Ads, and GA4 performance data.
-- Compare the last 7, 14, 30 days, or another user-specified period.
-- Report CPA, ROAS, CTR, CVR, CPM, CPC, spend, conversions, and revenue.
-- Compare performance across Google Ads, Meta Ads, and GA4.
-- Use GA4 to review landing pages, source / medium, campaign, and onsite behavior.
-- Write full Markdown analysis reports to `output/`.
+- Compare the past 7, 14, 30 days, or another specified period.
+- Produce metrics such as CPA, ROAS, CTR, CVR, CPM, CPC, spend, conversions, and revenue.
+- Compare cross-platform performance across Google Ads, Meta Ads, and GA4.
+- Use GA4 to inspect landing page, source / medium, campaign, and onsite behavior performance.
+- Write complete Markdown analysis results to `output/`.
 - Show Data sources, Environment Gate, Analysis Trace, and Data gaps in reports.
-- Use CSV files under `data/` as explicit manual data sources in production.
+- Use CSV files under `data/` as explicit manual import sources in production.
 - Use test data or Mock MCP under `test/` for development testing.
-- Prepare Google Sheets report output when requested; actually creating a Sheet still requires Google Sheets / Google Drive tools in the runtime.
+- Plan Google Sheets reports when requested; actually creating a Sheet still requires Google Sheets / Google Drive tools in the runtime.
 
 ## What It Cannot Do Today
 
 - It cannot invent performance numbers when data is missing.
-- It cannot automatically modify campaigns, budgets, bids, targeting, creative, tracking, or status.
+- It cannot automatically modify campaign, budget, bid, targeting, creative, tracking, or status.
 - It cannot automatically publish, pause, or delete ads.
 - It cannot present test data as production data.
 - It cannot present CSV, BigQuery, or SQL data as native platform MCP data.
 - It cannot silently switch to another data source when MCP fails.
-- `scripts/run-recipe.mjs` is now treated as a legacy / development-only runner for Mock MCP and older recipe validation. Production-style cross-channel period comparison should use the Python + SQL 360 table workflow.
-- The BigQuery production source is currently marked as planned.
+- `scripts/run-recipe.mjs` is currently treated as a legacy / development-only runner, mainly for Mock MCP and older recipe validation. Production-style cross-channel period comparison should use the Python + SQL 360 table workflow.
+- The BigQuery production source is currently marked as planned and will be developed later.
 
 ## Initial Setup
 
-### 1. Set up `.env`
+Start with `/ma-start` so the agent can help you check and configure the environment through a guided conversation.
 
-Copy:
+### Step 0. Read Current State
 
-```text
-.env.example
-```
+- The system detects the current environment and shows the setup progress and checklist.
 
-to:
+### Step 1. Choose Data Source Mode
 
-```text
-.env
-```
+- **MCP mode**: connects to data sources such as Google Ads, Meta Ads, and GA4. This requires credentials and MCP tool mapping.
+- **CSV mode**: manually imports report data. This does not require platform credentials; you can skip Step 2 and Step 3, then optionally complete Step 4 and Step 5.
 
-The most important settings are:
+### Step 2. Credential Setup (MCP Mode Only)
 
-```env
-APP_ENV=production
-DATA_SOURCE_CONFIG=config/data-sources.yml
-```
+- Guides you to create a `.env` file in the repo root and fill in the environment variables required by Google Ads / Meta Ads / GA4.
+- Do not commit API keys, OAuth secrets, access tokens, refresh tokens, client secrets, or developer tokens to git.
 
-Common environments:
+### Step 3. Adapter Tool Mapping (MCP Mode Only)
 
-- `development`: for testing, mainly using data under `test/`.
-- `production`: for real analysis, using production MCP, BigQuery / SQL, or explicitly provided CSV files under `data/`.
+- The system prompts you to fill in the actual MCP server tool names in `connectors/*.adapter.yml`.
+- You can skip this during initial setup and return to it after confirming that MCP tools are visible.
 
-Do not commit API keys, OAuth secrets, access tokens, refresh tokens, client secrets, or developer tokens to git.
+### Step 4. Create Account Context (`config/accounts.yml`)
 
-#### Where to find `.env` values
+- Recommended for MCP mode; optional for CSV mode.
+- You can record brand, ad account labels, currency, timezone, and notes so the agent can produce clearer analysis.
 
-`.env` contains two kinds of values: environment settings and platform connection values.
+### Step 5. Fill In Business Context
 
-Environment settings are usually decided by the person using this repo:
+- Through guided questions, collect brand market, main KPI, client preferences, and reporting style.
+- After confirmation, write the result to `profile/business-context.md`.
 
-```env
-APP_ENV=production
-DATA_SOURCE_CONFIG=config/data-sources.yml
-```
+### Step 6. Setup Summary
 
-Platform connection values usually come from platform admin pages, developer dashboards, an agency, or an engineering / systems team. It is normal for marketers not to know how to generate every value.
-
-Common Google Ads values:
-
-- `GOOGLE_ADS_CUSTOMER_ID`: the Google Ads account ID you want to analyze. It is usually visible in the Google Ads UI near the account switcher.
-- `GOOGLE_ADS_LOGIN_CUSTOMER_ID`: usually the MCC / manager account ID when accounts are managed through a manager account.
-- `GOOGLE_ADS_CLIENT_ID` / `GOOGLE_ADS_CLIENT_SECRET`: OAuth client values, usually created in Google Cloud Console.
-- `GOOGLE_ADS_DEVELOPER_TOKEN`: Google Ads API developer token, usually provided by someone with Google Ads API access.
-- `GOOGLE_ADS_REFRESH_TOKEN`: OAuth refresh token, usually generated with help from someone familiar with OAuth.
-
-Common Meta Ads values:
-
-- `META_AD_ACCOUNT_ID`: the Meta ad account ID. It may look like `act_123456789` or a numeric ID and can usually be found in Ads Manager or Business Settings.
-- `META_BUSINESS_ID`: the Business Manager / Business Portfolio ID.
-- `META_APP_ID` / `META_APP_SECRET`: Meta Developer App values, usually created by someone with Meta Developer access.
-- `META_ACCESS_TOKEN`: Meta API access token, usually provided by an admin, agency, or engineering team.
-
-Common GA4 values:
-
-- `GA4_PROPERTY_ID`: GA4 property ID, available in GA4 Admin under Property settings.
-- `GA4_CREDENTIALS_JSON`: service account JSON, usually created by a Google Cloud / GA4 admin.
-- `GA4_CLIENT_EMAIL` / `GA4_PRIVATE_KEY`: fields from a service account. If `GA4_CREDENTIALS_JSON` is used, these may not need to be filled separately.
-- `GA4_CLIENT_ID` / `GA4_CLIENT_SECRET` / `GA4_REFRESH_TOKEN`: used only for OAuth-based setups.
-
-If you are unsure which values are needed, check the MCP server documentation you plan to use. Different MCP servers may require different variables.
-
-Safety reminders:
-
-- Do not paste `.env` contents into README files, GitHub issues, public Slack channels, or analysis reports.
-- For debugging, show only whether a value is present or missing, such as `GOOGLE_ADS_REFRESH_TOKEN=present`. Do not show the actual value.
-- If a token was pasted publicly, treat it as leaked and regenerate it.
-
-### 2. Optionally set up `config/accounts.yml`
-
-If `.env` or your MCP runtime already manages account IDs and property IDs, you may not need `config/accounts.yml`.
-
-`config/accounts.yml` is for human-readable account context, such as account labels, brand names, timezones, currencies, notes, or multi-account mapping. It should not require you to manually enter the same IDs already stored in `.env`.
-
-If you want this extra context, copy:
-
-```text
-config/accounts.example.yml
-```
-
-to:
-
-```text
-config/accounts.yml
-```
-
-Useful fields include:
-
-- account label
-- brand / client name
-- timezone
-- currency
-- notes
-
-Do not commit `config/accounts.yml` to GitHub. It may contain client account context or internal naming.
-
-### 3. Set up `config/data-sources.yml`
-
-Copy:
-
-```text
-config/data-sources.example.yml
-```
-
-to:
-
-```text
-config/data-sources.yml
-```
-
-This file tells the agent:
-
-- whether the current environment is development, test, or production
-- which data sources are enabled
-- which sources are test-only
-- which sources are allowed for production analysis
-
-Production sources should use:
-
-- `production_allowed: true`
-- `enabled: true`
-
-### 4. What to ask AI if you do not understand MCP
-
-MCP connects platforms such as Google Ads, Meta Ads, and GA4 to the AI agent, so the agent can read data directly.
-
-If you do not have MCP right now, you can skip this step and use CSV import in the next step.
-
-If you are not sure what MCP is, whether you need it, or whether you can set it up yourself, ask AI first. You do not need to understand command, runtime, or token details upfront.
-
-You can ask:
-
-```text
-I want to use this repo to analyze Google Ads / Meta Ads / GA4.
-I am not sure whether I have MCP or how to configure it.
-Please inspect this repo and tell me which setup steps I can do myself and which may need technical help.
-Do not ask me to paste any token or secret.
-```
-
-If you use Claude Code, you can ask:
-
-```text
-I use Claude Code.
-Please inspect README.md, mcp.example.json, config/data-sources.yml, and docs/MCP_SETUP.md.
-Tell me what I need to prepare for Google Ads / Meta Ads / GA4 MCP, and how to check whether MCP tools are visible.
-Do not display or ask me to paste any token.
-```
-
-To check `.env` safely, ask:
-
-```text
-Please check whether .env has the required fields.
-Only tell me which variables are present or missing. Do not display any real values.
-```
-
-If you want to use the command-style flow directly in the IDE, start with:
-
-- `/ma-start` for first-time setup or an environment check
-- `/ma-method` to add or modify an analysis method
-- `/ma-test` for a non-destructive validation run
-
-The agent will guide the flow based on those commands, so you do not need to understand the repo structure first.
-
-If you do not have MCP and want to use CSV:
-
-```text
-I do not have MCP right now.
-I will place Google Ads / Meta Ads / GA4 exported CSV files in data/.
-Please tell me how to name the files and which columns are needed for safe analysis.
-```
-
-If you eventually need help from an engineer, agency, or system administrator, ask AI to prepare the request:
-
-```text
-Please create an MCP setup checklist for this repo.
-Include:
-- platforms to connect
-- account/property IDs needed
-- tokens or OAuth permissions needed
-- where Claude Code / Codex / Cursor may need MCP settings
-- how to verify that MCP tools are visible after setup
-Do not include any real secrets.
-```
-
-If AI confirms that MCP is available, then your agent runtime needs to know:
-
-- which MCP server to start
-- which command starts it
-- which `.env` variables should be passed to the server
-- where the MCP settings live in your runtime, such as Claude Code, Claude Desktop, Codex, Cursor, or Windsurf
-
-This repo only provides an example:
-
-```text
-mcp.example.json
-```
-
-It is a conceptual example and is not automatically loaded by every tool.
-
-`mcp.example.json` does not take effect by itself. It only shows that MCP settings usually need `command`, `args`, and `env`. Copy the relevant ideas into your own agent runtime's MCP configuration.
-
-If you need help, share the following with the person helping you:
-
-- the platforms you want to connect, such as Google Ads, Meta Ads, GA4, or another platform
-- the AI tool you use, such as Claude Code, Claude Desktop, Codex, Cursor, or Windsurf
-- the `.env` variable names you have prepared, without real token values
-- this repo's `mcp.example.json` and `docs/MCP_SETUP.md`
-
-After setup, ask them to confirm that the AI tool can see the MCP tools.
-
-Official MCP references:
-
-- Google Ads MCP: https://developers.google.com/google-ads/api/docs/developer-toolkit/mcp-server
-- Meta Ads MCP: https://www.facebook.com/business/help/1456422242197840
-- GA4 MCP: https://developers.google.com/analytics/devguides/MCP
-
-### 5. If you do not have MCP, place CSV files in `data/`
-
-If MCP is not available, place manually exported CSV files in:
-
-```text
-data/
-```
-
-Use clear file names, for example:
-
-```text
-google_ads_YYYY-MM-DD_to_YYYY-MM-DD.csv
-meta_campaign_YYYY-MM-DD_to_YYYY-MM-DD.csv
-ga4_landing_page_YYYY-MM-DD_to_YYYY-MM-DD.csv
-line_ads_campaign_YYYY-MM-DD_to_YYYY-MM-DD.csv
-```
-
-File names do not need to follow one exact format, but humans should be able to understand:
-
-- source platform
-- report level
-- date range
-
-When CSV is used, the agent must label the data as `csv_export` or manual source. It must not label CSV data as native MCP.
-
-## Business Context
-
-If you want the agent to understand the brand, KPI, and client priorities, copy:
-
-```text
-profile.example/business-context.md
-```
-
-to:
-
-```text
-profile/business-context.md
-```
-
-You can include:
-
-- what the brand is
-- main KPI, such as CPA, ROAS, revenue, signups, or leads
-- what the client cares about most
-- preferred reporting tone, such as executive summary or detailed analysis
-
-Do not commit `profile/` to GitHub.
-
-Business context only changes recommendation framing and communication. It does not replace real platform, GA4, warehouse, CSV, or MCP data.
-
-## Production MCP Adapters
-
-If you use real MCP, use production adapters:
-
-- `connectors/google-ads-mcp.adapter.yml`
-- `connectors/meta-ads-mcp.adapter.yml`
-- `connectors/ga4-mcp.adapter.yml`
-
-These adapters tell the agent:
-
-- which platform the MCP source belongs to
-- which MCP tool can fetch campaign performance
-- how returned fields map to spend, clicks, conversions, revenue, and other metrics
-
-The adapters currently contain placeholders such as:
-
-```yaml
-tool: REPLACE_WITH_GOOGLE_ADS_CAMPAIGN_PERFORMANCE_TOOL
-```
-
-Replace these with the actual MCP tool names exposed by your runtime.
-
-If a production adapter still contains `REPLACE_WITH_...`, use one of these safe options:
-
-1. Set the matching source in `config/data-sources.yml` to `enabled: false`.
-2. Keep `enabled: true`, but the agent must fail closed at runtime and report that the MCP tool is not configured.
-
-Before going live, option 1 is recommended.
-
-Do not modify `connectors/mock-mcp.adapter.yml` for production data. Mock MCP is only for development / test.
+- Shows the final setup status and recommended next step.
+- If data sources are available, you can start running analysis tasks.
 
 ## Analysis Output
 
-Analysis results are written to:
+Analysis results are written to the `output/` folder.
 
-```text
-output/
-```
+According to `policies/language-policy.md`, the report language follows the user's primary language. If the user asks in Traditional Chinese, the report is in Traditional Chinese. If the user asks in English, the report is in English.
 
-The report language follows the user's main language. If the user asks in English, the report is in English. If the user asks in Traditional Chinese, the report is in Traditional Chinese.
-
-Test environment filename example:
+In test environments, filenames start with `zzz-test`, for example:
 
 ```text
 output/zzz-test-analysis-20260528-143000-cross-channel.md
@@ -404,15 +122,15 @@ Production filename example:
 output/analysis-20260528-143000-google-ads.md
 ```
 
-In test environments, the first Markdown line must clearly say:
+In test environments, the first Markdown line must clearly indicate:
 
 ```markdown
 # This is TEST - Cross-channel Ads Performance Analysis
 ```
 
-Production reports do not need an extra production marker.
+Production reports do not need an additional production marker.
 
-Every report should include:
+Every analysis report should include:
 
 - Data sources
 - Environment Gate result
@@ -423,106 +141,36 @@ Every report should include:
 - Risks
 - Data gaps
 
-## Glossary
-
-Terms, abbreviations, field codes, and ad format codes live in:
-
-```text
-docs/GLOSSARY.md
-```
-
-This helps the agent use consistent wording and avoid misunderstanding campaign names or field abbreviations.
-
-Example Meta / Facebook ad format codes:
-
-- `car`: Carousel Ads
-- `img`: Image Ads
-- `col`: Collection Ads
-- `vid`: Video Ads
-
-If you later use LINE Ads, TikTok Ads, or another platform, add common terms to the glossary.
-
-## 360 Table Workflow
-
-For cross-channel period comparison, the preferred data flow is:
-
-```text
-raw MCP / CSV sources -> exports/360_table.csv -> period compare JSON -> AI insight
-```
-
-The cleaning SQL lives in:
-
-```text
-sql/build_360_table.sql
-```
-
-Script language policy:
-
-- Production data cleaning, 360 table build, and period comparison use Python + SQL.
-- `scripts/run-recipe.mjs` remains legacy / development-only for Mock MCP and older recipe validation.
-- New production analysis scripts should follow the Python + SQL pattern unless there is a clear reason not to.
-
-Run the SQL-backed combiner:
-
-```bash
-python3 scripts/combine_to_360_table.py \
-  --google-ads-csv test/csv/google_ads_raw.csv \
-  --meta-ads-csv test/csv/meta_ads_raw.csv \
-  --ga4-csv test/csv/ga4_raw.csv \
-  --out exports/360_table.csv
-```
-
-Then run period compare:
-
-```bash
-python3 scripts/period_compare_360_table.py \
-  --input exports/360_table.csv \
-  --current-start 2026-05-23 \
-  --current-end 2026-05-25 \
-  --previous-start 2026-05-19 \
-  --previous-end 2026-05-21 \
-  --out exports/period_compare.json
-```
-
-Metric policy: CVR, CPA, ROAS, ROI, conversion, and revenue calculations use GA4 fields from the 360 table. Platform-reported conversions and revenue remain available for audit.
-
-More detail:
-
-```text
-workflows/360-table-workflow.md
-```
-
 ## Skill-Based Workflow
 
 This repo separates analysis rules into layers so they are easier to maintain.
 
-### Main file responsibilities
+### Main File Responsibilities
 
-- `CLAUDE.md`: top-level operating rules, such as source safety, environment checks, output rules, and approval policy.
+- `CLAUDE.md`: top-level operating rules, such as data safety, environment checks, output rules, and whether user approval is required.
 - `modes/_shared.md`: shared metrics and rules used by all analyses.
-- `skills/ads-analysis/SKILL.md`: the analysis workflow, including required files, source selection, and output.
-- `modes/analyses/`: defines what kind of analysis is being performed.
-- `modes/platforms/`: defines platform-specific interpretation rules.
-- `docs/GLOSSARY.md`: term and abbreviation definitions.
+- `skills/ads-analysis/SKILL.md`: the analysis workflow, including which files to read first, how to choose data sources, and how to output results.
+- `modes/analyses/`: defines what type of analysis is being run.
+- `modes/platforms/`: defines which platform the data comes from and what to watch for during interpretation.
+- `docs/GLOSSARY.md`: term and abbreviation reference.
 - `templates/`: report formats.
 
-### How the agent chooses modes
+### How the Agent Chooses Modes
 
-The agent first decides what kind of analysis the user wants, then determines which platforms are involved.
+The agent first determines what type of analysis the user wants, then determines which platforms are involved.
 
 For example:
 
 ```text
-Compare the last 7 days with the previous 7 days.
+Compare the past 7 days with the previous 7 days.
 ```
 
-This should use:
-
-- `modes/analyses/performance-summary.md`
-
-If the data includes Google Ads, Meta Ads, and GA4, it should also use:
+This should prioritize:
 
 - `modes/analyses/cross-channel.md`
+
+If the data includes Google Ads, Meta Ads, and GA4, it also uses:
+
 - `modes/platforms/google-ads.md`
 - `modes/platforms/meta-ads.md`
 - `modes/platforms/ga4.md`
@@ -532,7 +180,7 @@ Simple rule:
 - `modes/analyses/`: analysis method
 - `modes/platforms/`: platform knowledge
 
-### Adding a GA4 User Journey analysis
+### Adding a GA4 User Journey Analysis
 
 If this is a new report or analysis method, add:
 
@@ -540,17 +188,18 @@ If this is a new report or analysis method, add:
 modes/analyses/user-journey.md
 ```
 
-If it is still exploratory and the data format is not stable, start with:
+If you only want to record the idea for now, or the data format is still unstable, start with:
 
 ```text
 modes/backlog/user-journey.md
 ```
 
-Move it into `modes/analyses/` once the data fields and analysis method are stable.
+Move it into `modes/analyses/` after the data fields and analysis method are stable.
+If you are not familiar with how to add it, you can also ask the agent for help.
 
-### Adding LINE Ads analysis
+### Adding LINE Ads Analysis
 
-If LINE Ads becomes a recurring data source, add:
+If LINE Ads becomes a regular data source, add:
 
 ```text
 modes/platforms/line-ads.md
@@ -558,46 +207,46 @@ modes/platforms/line-ads.md
 
 Also consider:
 
-- adding LINE Ads terms to `docs/GLOSSARY.md`
-- adding LINE Ads CSV column detection to `connectors/manual-csv.adapter.yml`
-- adding a LINE Ads source entry to `config/data-sources.yml`
+- Adding LINE Ads common terms to `docs/GLOSSARY.md`.
+- Adding LINE Ads CSV column detection to `connectors/manual-csv.adapter.yml`.
+- Adding a LINE Ads data source setting to `config/data-sources.yml`.
 
-### Changing analysis logic
+### Changing Analysis Logic
 
-Change the right layer for the change:
+Choose the file based on what you want to change:
 
-- Data safety or folder access rules: `CLAUDE.md`
-- Shared formulas or shared metrics: `modes/_shared.md`
-- Performance summary, period comparison, or cross-channel logic: `modes/analyses/`
-- Platform interpretation for Google Ads, Meta Ads, GA4, or LINE Ads: `modes/platforms/`
-- Terms and abbreviations: `docs/GLOSSARY.md`
-- Report structure: `templates/`
+- To change data safety or whether a folder can be read: edit `CLAUDE.md`.
+- To change shared metric formulas: edit `modes/_shared.md`.
+- To change performance summary, period comparison, or cross-channel analysis logic: edit `modes/analyses/`.
+- To change platform interpretation for Google Ads, Meta Ads, GA4, or LINE Ads: edit `modes/platforms/`.
+- To change terms and abbreviations: edit `docs/GLOSSARY.md`.
+- To change report appearance: edit `templates/`.
 
 When changing logic:
 
-- Do not let production silently read test data.
-- Do not label CSV as MCP.
+- Do not let production automatically read test data.
+- Do not mislabel CSV as MCP.
 - Do not let the agent guess missing numbers.
-- If you add a new analysis method, include example questions and expected data gaps.
+- If you add a new analysis method, it is best to also add example questions and expected data gaps.
 
 ## Write Action Approval Policy
 
-The agent is read-only by default. It reads data and writes analysis reports.
+This agent is read-only by default. It reads data and produces analysis.
 
-Any change to an ad account requires explicit user approval first, including:
+Any action that changes an ad account must receive explicit user approval first, for example:
 
-- campaign changes
-- budget changes
-- bid changes
-- targeting changes
-- creative changes
-- tracking changes
-- pausing or enabling ads
-- status changes
+- Changing campaign
+- Changing budget
+- Changing bid
+- Changing targeting
+- Changing creative
+- Changing tracking
+- Pausing or enabling ads
+- Changing status
 
-Before approval, the agent may only make recommendations.
+Before approval, the agent can only make recommendations and must not execute changes directly.
 
-Creating or updating a Google Sheet report is a report artifact write, not an ad account change. However, any recommendation that changes campaigns or budgets still requires separate approval.
+Creating or updating a Google Sheet report is a report artifact and is not the same as changing an ad account. However, if the report recommends changing campaign or budget, that change still requires separate approval.
 
 ## Troubleshooting
 
@@ -605,33 +254,33 @@ Creating or updating a Google Sheet report is a report artifact write, not an ad
 
 Check:
 
-- whether the runtime loaded the MCP config
-- whether the MCP command can run
-- whether secrets are available to the runtime
-- whether `REPLACE_WITH_...` placeholders were replaced with real MCP tool names
+- Whether the runtime actually loaded the MCP config.
+- Whether the MCP command can run.
+- Whether secrets are loaded by the runtime.
+- Whether `REPLACE_WITH_...` in adapters has been replaced with actual tool names.
 
 ### The agent says no data source is available
 
 Check:
 
-- whether `.env` has the correct `APP_ENV`
-- whether `config/data-sources.yml` has the right `enabled: true` source
-- whether production sources have `production_allowed: true`
-- if using CSV, whether `manual_csv_fallback` is enabled or exact CSV file paths were provided
+- Whether `.env` has the correct `APP_ENV`.
+- Whether `config/data-sources.yml` has the correct `enabled: true`.
+- Whether production sources have `production_allowed: true`.
+- If using CSV, whether `manual_csv_fallback` is enabled or an exact CSV file path was provided.
 
 ### CSV files are in `data/`, but the agent does not read them
 
-This is usually correct safety behavior. The agent should not scan `data/` automatically.
+This is usually correct safety behavior. The agent should not automatically scan `data/`.
 
-Provide exact files, for example:
+Specify the file explicitly, for example:
 
 ```text
-Please use data/google_ads_2026-05-01_to_2026-05-28.csv to analyze the last 28 days.
+Please use data/google_ads_2026-05-01_to_2026-05-28.csv to analyze the past 28 days.
 ```
 
 ### The report starts with `# This is TEST`
 
-This means the environment is development or test. Check `.env`:
+This means the current environment is development or test. Check `.env` or runtime environment variables:
 
 ```env
 APP_ENV=production
@@ -641,82 +290,82 @@ APP_ENV=production
 
 Common reasons:
 
-- date range mismatch
-- timezone mismatch
-- attribution window mismatch
-- conversion definition mismatch
-- GA4 key events are not the same as platform conversions
-- data delay
-- incomplete CSV export columns
+- Date range mismatch
+- Timezone mismatch
+- Attribution window mismatch
+- Conversion definition mismatch
+- GA4 key event and platform conversion are not the same event
+- Data delay
+- Incomplete CSV export columns
 
 ### Google Sheets report was not created
 
-The Google Sheets reporting skill defines the workflow, but creating or updating a Sheet requires Google Sheets / Google Drive tools in the runtime. If those tools are unavailable, the agent should write Markdown or a structured report instead of pretending that a Sheet was created.
+The Google Sheets reporting skill defines the workflow, but actually creating or updating a Sheet requires Google Sheets / Google Drive tools in the runtime. If the tools are unavailable, the agent should output Markdown or a structured report first and should not pretend that a Sheet was created.
 
 ## Additional Notes
 
 ### Test data and production data
 
-- `test/`: development / test data only.
-- `data/`: manually imported CSV files. Production can use this only when explicit.
-- `output/`: analysis results. Do not commit generated reports to GitHub.
+- `test/`: only for development / test data.
+- `data/`: for manually imported CSV files. Production can use it, but the file must be explicit.
+- `output/`: for analysis results. Do not commit it to GitHub.
 
 ### Common data source types
 
-- Native MCP: platform MCP sources such as Google Ads, Meta Ads, or GA4.
-- Manual CSV: CSV files exported manually by users.
-- BigQuery / SQL: future warehouse sources. The production BigQuery source is currently marked as planned.
+- Native MCP: platform MCP sources such as Google Ads, Meta Ads, and GA4.
+- Manual CSV: CSV files manually exported by the user.
+- BigQuery / SQL: can be used as a warehouse source in the future. The production BigQuery source is currently marked as planned.
 
 #### MCP setup wizard, added 5/29
 
 `workflows/mcp-setup-wizard.md` is the conversational fallback for MCP setup.
 
-It appears when an analysis or reporting task needs production MCP data, but the preflight cannot find any usable production MCP source. Typical causes include:
+It appears when an analysis or reporting task needs production MCP data, but preflight cannot find any usable production MCP source. Common causes include:
 
-- `config/data-sources.yml` enables Google Ads, Meta Ads, or GA4 MCP, but the runtime does not expose matching MCP tools.
-- The production adapter still contains placeholder tool names such as `REPLACE_WITH_*`.
+- `config/data-sources.yml` enables Google Ads, Meta Ads, or GA4 MCP, but the runtime does not have matching MCP tools.
+- The production adapter still contains `REPLACE_WITH_*` placeholder tool names.
 - The enabled source does not pass the current `APP_ENV` / Environment Gate.
 
 What it does:
 
-- Shows which data source checks already ran.
+- Shows which data source settings have already been checked.
 - Asks whether the user wants help setting up MCP.
-- Walks through Google Ads, Meta Ads, GA4, and optional BigQuery / SQL setup one at a time.
-- Includes a skip option for every MCP source.
-- Collects only non-secret setup information and runtime tool mapping.
+- Guides setup for Google Ads, Meta Ads, GA4, and, if needed, BigQuery / SQL.
+- Provides a skip option for each MCP source.
+- Collects only non-sensitive setup information and runtime tool mapping.
 
 How to modify it:
 
-- Edit `workflows/mcp-setup-wizard.md` to change the conversation flow, prompts, platform order, or validation checklist.
-- Edit `CLAUDE.md` only when changing when the wizard should trigger.
+- To change the conversation flow, prompt text, platform order, or validation checklist, edit `workflows/mcp-setup-wizard.md`.
+- To change when the wizard triggers, edit `CLAUDE.md`.
 - Do not add token, secret, webhook, client secret, refresh token, developer token, or private key collection to this workflow.
 - Do not modify `connectors/mock-mcp.adapter.yml` to represent production MCP.
 
 #### Recurring task wizard, added 5/29
 
-`workflows/recurring-task-wizard.md` lets non-technical users create, change, pause, resume, or delete recurring analysis tasks without editing YAML directly.
+`workflows/recurring-task-wizard.md` lets non-technical users add, modify, pause, resume, or delete recurring analysis tasks through conversation without directly editing YAML.
 
-It appears when the user asks for a scheduled or repeated analysis task, for example:
+It appears when the user asks for scheduled or repeated analysis, for example:
 
-- "Create a task that checks CPA every morning."
-- "Every Monday, compare last week and the week before."
-- "Pause the daily performance task."
+- "Check whether CPA gets worse every morning."
+- "Compare last week and the week before every Monday."
+- "Pause the daily performance check."
 
 What it does:
 
-- Asks plain-language questions instead of asking the user to write YAML or cron.
-- Converts the answers into a proposed task definition.
-- Shows a summary before changing `config/recurring-tasks.yml`.
-- Requires explicit user confirmation before writing any task change.
-- Keeps output as `output/` Markdown by default.
+- Uses natural language questions and does not require the user to know YAML or cron.
+- Converts user answers into a proposed task definition.
+- Shows a summary before modifying `config/recurring-tasks.yml`.
+- Requires explicit user confirmation before writing task changes.
+- By default, outputs results only as Markdown under `output/`.
 
 How to modify it:
 
-- Edit `workflows/recurring-task-wizard.md` to change the questions, task ID rules, natural-language mappings, or confirmation format.
-- Edit `config/recurring-tasks.yml` only for actual task definitions.
-- Edit `workflows/recurring-analysis.md` only for how already-defined recurring tasks run.
-- Keep notification mode as `output_only` until Slack, Teams, or email delivery is configured outside the repo.
-- Do not store Slack webhooks, Teams webhooks, tokens, or secrets in this repo.
+- To change questions, task ID rules, natural language mapping, or confirmation format, edit `workflows/recurring-task-wizard.md`.
+- Actual recurring task definitions live in `config/recurring-tasks.yml`.
+- Execution for already-defined tasks lives in `workflows/recurring-analysis.md`.
+- Keep notification mode as `output_only` until Slack, Teams, or email delivery is configured outside this repo.
+- Do not put Slack webhooks, Teams webhooks, tokens, or secrets in this repo.
 
 ### Related files
 
@@ -724,14 +373,14 @@ How to modify it:
 - `policies/`: split policy files referenced by `CLAUDE.md`.
 - `DATA_CONTRACT.md`: data layering and commit rules.
 - `docs/MCP_SETUP.md`: MCP and data source safety rules.
-- `docs/GLOSSARY.md`: glossary and naming reference.
+- `docs/GLOSSARY.md`: glossary.
 - `docs/GOOGLE_SHEETS_REPORTING.md`: Google Sheets reporting workflow.
 - `config/recurring-tasks.yml`: recurring analysis task table.
-- `config/priority-overrides.example.yml`: example source priority override file.
+- `config/priority-overrides.example.yml`: source priority override example.
 - `sql/build_360_table.sql`: readable SQL for paid media union, source priority, dedupe, and GA4 left join.
-- `scripts/combine_to_360_table.py`: applies the SQL and writes `exports/360_table.csv`.
-- `scripts/period_compare_360_table.py`: compares two periods using `exports/360_table.csv`.
+- `scripts/combine_to_360_table.py`: applies SQL and writes `exports/360_table.csv`.
+- `scripts/period_compare_360_table.py`: runs period comparison using `exports/360_table.csv`.
 - `workflows/360-table-workflow.md`: SQL-backed 360 table and period comparison workflow.
 - `workflows/mcp-setup-wizard.md`: conversational MCP setup fallback.
-- `workflows/recurring-task-wizard.md`: conversational recurring task creation and editing flow.
-- `workflows/recurring-analysis.md`: execution flow for already-defined recurring tasks.
+- `workflows/recurring-task-wizard.md`: conversational recurring task creation and editing workflow.
+- `workflows/recurring-analysis.md`: execution workflow for already-defined recurring tasks.
