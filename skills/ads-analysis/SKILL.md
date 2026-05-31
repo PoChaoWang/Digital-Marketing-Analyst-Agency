@@ -106,3 +106,33 @@ output/analysis-20260528-143000-google-ads.md
 ### 禁止寫入 output/ 的內容
 
 raw source exports、secrets、tokens、credentials、private config values。
+
+## Failure Handling
+
+以下規則處理資料內容層的異常。資料來源層（MCP 不可用、source allowlist）由 `DATA_CONTRACT.md` 與 `policies/environment-gate.md` 管轄，不在此重複。
+
+### MCP 回傳但資料為空
+- 任一平台回傳空陣列或 0 筆 campaign：停止該平台分析，在 Data Gaps 記錄「[平台] 回傳空資料，無法判斷原因（MCP 正常但無資料）」。
+- 不以 0 值繼續計算指標，不推論原因。
+
+### 關鍵欄位缺失
+關鍵欄位定義：`spend`、`impressions`、`clicks`、`conversions`。
+
+- 關鍵欄位缺失：停止該平台或該 campaign 的分析，在 Data Gaps 標記缺失欄位與影響範圍。
+- 非關鍵欄位缺失（如 `quality_score`、`frequency`）：繼續分析，在 Data Gaps 標記，結論不引用該欄位。
+
+### 跨平台轉換數差異
+適用於 cross-channel intent，GA4 conversions vs 平台回報比較。
+
+- 差異 > 50%：在 Observation 標記 `[Attribution Alert]`，說明差異數字，不推論原因，建議人工確認 tracking 設定。
+- 差異 20–50%：在 Analysis Trace 記錄差異比例，在 Inference 標注「attribution 差異在可觀察範圍，但建議確認 conversion window 設定」。
+- 差異 < 20%：正常記錄，在 Analysis Trace 標注差異比例。
+
+### 指標異常值
+- 單一 campaign CTR > 30% 或 CVR > 50%：在 Observation 標記 `[Data Anomaly]`，不納入平均值計算，在 Data Gaps 說明排除原因。
+- CPA 或 ROAS 為 0 或 null（有 spend 但無 conversions）：記錄為「無轉換資料」，不計算 CPA/ROAS，在 Data Gaps 標記。
+
+### 共同原則
+- 失敗必須顯性：任何異常都必須在 Data Gaps 或 Analysis Trace 留下記錄。
+- 不靜默繼續：關鍵資料有問題時，寧可停止部分分析，不產出基於錯誤資料的結論。
+- 不推論異常原因：標記異常事實，原因留給人工判斷。
