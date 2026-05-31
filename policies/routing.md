@@ -24,6 +24,10 @@
 | `landing-page` | landing page、CVR、onsite、品質、跳出、頁面、到達頁 | `modes/analyses/landing-page-quality.md` |
 
 **若無法對應任何 intent：** 停止，詢問使用者「請問這次任務的主要目標是什麼？」，不要猜測，不要繼續執行。
+**衝突範例：**
+- 「上週成效 + 跟上上週比」→ cross-channel（有 period compare，更具體）
+- 「Meta 這週花了多少」→ performance-summary（單平台單期間，無比較）
+- 「landing page CVR 跟上個月比」→ cross-channel，追加 landing-page mode
 
 ---
 
