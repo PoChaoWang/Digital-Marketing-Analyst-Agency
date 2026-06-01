@@ -13,13 +13,10 @@ Please use GitHub Issues and include a clear description of the problem and step
 
 ## Development Setup
 
-1. Make sure you have Python installed. You can download it from [python.org](https://www.python.org/).
+1. Make sure you have Python 3 installed.
 2. Clone this repository
 ```bash
    git clone https://github.com/PoChaoWang/Digital-Marketing-Analyst-Agency.git
    cd Digital-Marketing-Analyst-Agency
 ```
-3. Install dependencies
-```bash
-   pip install -r requirements.txt
-```
+3. Install dependencies manually based on what's imported in the scripts.
