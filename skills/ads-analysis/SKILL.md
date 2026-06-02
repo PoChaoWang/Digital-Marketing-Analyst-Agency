@@ -4,7 +4,7 @@
 
 執行廣告與網站分析任務，產出結構化分析報告。涵蓋 Google Ads、Meta Ads、GA4 onsite behavior、campaign audit、weekly performance、landing page quality 與 cross-channel comparison。
 
-分析結果可直接輸出為 Markdown 報告，或作為結構化 JSON 傳給 `skills/google-sheets-reporting/`。
+分析結果可直接輸出為 Markdown 報告。
 
 本 skill 只執行有 recipe 支援的 active workflow。非 recipe-backed 的診斷能力在 `modes/backlog/`，不作為預設執行路徑。
 
@@ -50,8 +50,7 @@ Preflight 與 routing 完成後，依序執行：
    - **Recommendation**：建議行動，標明優先順序與風險等級；高風險建議標注 `Risk: High`。
 5. 記錄 Analysis Trace（見下方規格）。
 6. 記錄 Data Gaps：資料不足、欄位缺失、無法判斷的項目。
-7. 若下一步是 `skills/google-sheets-reporting/`，輸出須符合 `skills/ads-analysis/output.schema.json`。
-8. 將完整分析寫入 `output/`（見 Output Rules）。
+7. 將完整分析寫入 `output/`（見 Output Rules）。
 
 ---
 
