@@ -8,7 +8,7 @@
 - 測試 Markdown 第一行必須重點強調測試：`# This is TEST - {report_title}`。
 - Production Markdown 第一行不用額外標示 production，直接使用正常報告標題：`# {report_title}`。
 - Markdown 標題下方必須顯示輸出日期與時間：`Generated at: YYYY-MM-DD HH:mm:ss {timezone}`。
-- Markdown 結構依 `policies/language-policy.md` 選擇：繁中使用 `templates/analysis-output.zh-TW.md`，英文/default 使用 `templates/analysis-output.md`。
+- Markdown 結構使用 `templates/analysis-output.md`，使用語言依照`policies/language-policy.md`。
 - `output/` 是本機 artifact 目錄，不應提交到 git；只保留 `output/.gitkeep` 讓目錄存在。
 - Markdown 分析結果必須包含 Data sources、Environment Gate result、Analysis Trace、Observation、Inference、Recommendation、Risks、Data gaps。
 - 不得把 secrets、tokens、client secrets、refresh tokens、developer tokens、customer private identifiers 寫入 `output/`。
