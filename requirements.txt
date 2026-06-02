@@ -1,0 +1,5 @@
+PyYAML
+gspread
+google-auth
+duckdb
+python-dotenv
