@@ -1,3 +1,7 @@
+modes/backlog/*
+test/public-data/*
+test/mock-mcp/*
+tmp/*
 .env
 .env.*
 !.env.example
@@ -22,7 +26,3 @@ note.md
 .venv/
 config/my-project-for-bigquery-445809-35afe6cbc6c7.json
 docs/DASHBOARD_ARCHITECTURE_PLAN.md
-modes/backlog
-test/public-data
-test/mock-mcp
-tmp/
