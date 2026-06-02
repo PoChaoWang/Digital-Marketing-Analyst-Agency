@@ -1,0 +1,43 @@
+kpi_card:
+  description: "Highlight a single key metric with period comparison"
+  required_fields:
+    - current
+  optional_fields:
+    - previous
+    - change_pct
+    - unit
+  renderer: "KPI_CARD_TEMPLATE"
+
+line_chart:
+  description: "Visualize trends over time"
+  required_fields:
+    - labels
+    - datasets
+  chart_config:
+    type: "line"
+    options:
+      responsive: true
+      maintainAspectRatio: false
+      interaction:
+        mode: "index"
+        intersect: false
+      plugins:
+        legend:
+          position: "top"
+
+bar_chart:
+  description: "Compare metrics across different dimensions (campaign, channel, etc.)"
+  required_fields:
+    - labels
+    - values
+  chart_config:
+    type: "bar"
+    options:
+      responsive: true
+      maintainAspectRatio: false
+      scales:
+        y:
+          beginAtZero: true
+      plugins:
+        legend:
+          display: false
