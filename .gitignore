@@ -1,13 +1,21 @@
-modes/backlog/*
-test/public-data/*
-test/mock-mcp/*
-tmp/*
+# --- System Layer (Tracked) ---
+# Backlog capabilities and Mock MCP are part of the system logic
+!modes/backlog/*
+!test/mock-mcp/*
+
+# --- User Layer (Ignored) ---
+# Secrets and private credentials
 .env
 .env.*
 !.env.example
+config/*.json
+
+# Account and Data Source configurations (User specific)
 config/accounts.yml
 config/data-sources.yml
 profile/
+
+# Data artifacts and exports
 data/*
 !data/.gitkeep
 !data/README.md
@@ -17,12 +25,21 @@ reports/
 exports/
 output/*
 !output/.gitkeep
+
+# Temporary files and computation results
+tmp/*
+!tmp/.gitkeep
 tmp/recipe-results/*
 !tmp/recipe-results/.gitkeep
+
+# --- Development & System (Ignored) ---
 *.log
-prompt.md
 .DS_Store
-note.md
 .venv/
-config/my-project-for-bigquery-445809-35afe6cbc6c7.json
+__pycache__/
+*.pyc
+
+# Personal notes and scratchpads
+prompt.md
+note.md
 docs/DASHBOARD_ARCHITECTURE_PLAN.md
