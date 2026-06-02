@@ -20,6 +20,13 @@ When used after an analysis step, also use:
 - `skills/ads-analysis/output.schema.json`
 - `workflows/weekly-google-sheet-report.md`
 
+## Data Pipeline Steps
+
+1. Run `combine_to_360_table.py` to produce `exports/360_table.csv`
+2. Read `config/sheets-output.yml` to identify target spreadsheet and tab
+3. Run `push_to_sheets.py --config config/sheets-output.yml` to write raw data
+   - Use `--dry-run` first if environment is production (per environment-gate.md)
+
 ## Inputs
 
 Required:
@@ -58,6 +65,7 @@ Create or update these tabs when data is available:
 - `Recommended Actions`
 - `Data Gaps`
 - `Change Approval`
+- `Dashboard Link`  ← optional link/reference when a separate dashboard artifact exists
 
 ## Reporting Steps
 
@@ -76,3 +84,4 @@ Create or update these tabs when data is available:
 - Do not execute ad platform write actions.
 - Recommended actions that would modify ad accounts must remain marked `requires_approval: true`.
 - Keep raw exports in `exports/` or `data/`; final reports belong in `reports/` or Google Drive.
+- Interactive dashboards use `skills/dashboard-planning/` and `skills/dashboard-building/`; do not invent dashboard chart structures inside this reporting skill.

@@ -80,7 +80,7 @@
 ```
 Routing Result
 ──────────────
-Intent:          [cross-channel | performance-summary | landing-page]
+Intent:          [cross-channel | performance-summary | landing-page | dashboard]
 Platforms:       [google-ads] [meta-ads] [ga4]
 Files to load:   
   - modes/_shared.md
