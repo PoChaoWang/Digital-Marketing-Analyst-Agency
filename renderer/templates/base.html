@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,104 +10,272 @@
             --primary-color: #2563eb;
             --success-color: #16a34a;
             --danger-color: #dc2626;
+            --warning-color: #f59e0b;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+            --impact-bg: #fffef3;
+            --impact-text: #92400e;
+            --impact-border: #f59e0b;
+            --recommendation-bg: #eff6ff;
+            --recommendation-text: #1e40af;
+            --recommendation-border: #dbeafe;
+            --kpi-bg: #f8fafc;
+            --kpi-value-color: #2563eb;
         }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --impact-bg: #422006;
+            --impact-text: #fbbf24;
+            --impact-border: #b45309;
+            --recommendation-bg: #1e3a8a;
+            --recommendation-text: #bfdbfe;
+            --recommendation-border: #2563eb;
+            --kpi-bg: #0f172a;
+            --kpi-value-color: #ffffff;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Inter", "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
+            line-height: 1.5;
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
+            transition: background-color 0.3s, color 0.3s;
         }
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
         }
-        .header {
-            margin-bottom: 30px;
-            text-align: center;
+        header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
-        .page {
-            margin-bottom: 50px;
-        }
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
-        }
-        .layout-hero-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px;
-        }
-        .widget {
+        .header-content { flex: 1; }
+        h1 { font-size: 2.25rem; margin: 0; letter-spacing: -0.025em; }
+        
+        .theme-toggle {
             background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover { background: var(--border-color); }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 48px 0 24px 0;
+            display: flex;
+            align-items: center;
+        }
+        .section-title::after {
+            content: "";
+            flex-grow: 1;
+            height: 1px;
+            background: var(--border-color);
+            margin-left: 16px;
+        }
+
+        .executive-summary {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .insight-block {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            border: 1px solid var(--border-color);
+        }
+        .insight-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .finding-headline {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.2;
+            color: var(--text-main);
+            flex: 1;
+        }
+        .signal-badge {
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 20px;
+            white-space: nowrap;
+            background: var(--bg-color);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+
+        .impact-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--impact-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--impact-border);
+        }
+        .impact-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--impact-text);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .impact-text { font-weight: 500; color: var(--impact-text); }
+
+        .recommendation-box {
+            background: var(--recommendation-bg);
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            border: 1px solid var(--recommendation-border);
         }
-        .widget-title {
-            font-size: 1rem;
+        .recommendation-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--recommendation-text);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .recommendation-text {
+            font-size: 1.1rem;
             font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 15px;
+            color: var(--recommendation-text);
         }
-        .kpi-card {
-            grid-column: span 3;
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+        .evidence-item { min-height: 180px; }
+        .kpi-mini {
             text-align: center;
+            padding: 20px;
+            background: var(--kpi-bg);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .kpi-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary-color);
-        }
-        .kpi-delta {
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-        .delta-up { color: var(--success-color); }
-        .delta-down { color: var(--danger-color); }
+        .kpi-mini-value { font-size: 1.75rem; font-weight: 800; color: var(--kpi-value-color); }
+        .kpi-mini-label { font-size: 0.875rem; color: var(--text-muted); margin-top: 4px; }
         
-        .chart-widget {
-            grid-column: span 6;
-            min-height: 300px;
-        }
-        .chart-container {
-            position: relative;
-            height: 250px;
-            width: 100%;
-        }
-        
-        @media (max-width: 768px) {
-            .layout-hero-grid {
-                display: flex;
-                flex-direction: column;
-            }
-            .kpi-card, .chart-widget {
-                grid-column: span 12;
-            }
+        .chart-container { height: 180px; position: relative; }
+
+        @media (max-width: 640px) {
+            .evidence-grid { grid-template-columns: 1fr; }
+            .finding-headline { font-size: 1.5rem; }
+            .insight-header { flex-direction: column; }
+            .signal-badge { margin: 12px 0 0 0; align-self: flex-start; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1>{{ title }}</h1>
-            <p>Generated at: {{ generated_at }}</p>
+        <header>
+            <div class="header-content">
+                <h1>{{ title }}</h1>
+                <div style="margin-top: 10px; color: var(--text-muted);">{{ label_generated_at }}{{ generated_at }}</div>
+            </div>
+            <button class="theme-toggle" id="theme-toggle">
+                <span id="theme-toggle-icon">🌙</span>
+                <span id="theme-toggle-text">Dark Mode</span>
+            </button>
         </header>
-        
-        <main id="dashboard-content">
+
+        {{ executive_summary_section }}
+
+        <main>
             {{ content }}
         </main>
     </div>
-    
+
     <script>
-        // Chart Initialization Script
+        // Theme Management
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-toggle-icon');
+        const themeText = document.getElementById('theme-toggle-text');
+        
+        function setTheme(isDark) {
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            themeIcon.textContent = isDark ? '☀️' : '🌙';
+            themeText.textContent = isDark ? (document.documentElement.lang === 'en' ? 'Light Mode' : '日間模式') : (document.documentElement.lang === 'en' ? 'Dark Mode' : '深色模式');
+            localStorage.setItem('dashboard-theme', isDark ? 'dark' : 'light');
+            
+            // Update charts if they exist
+            if (window.myCharts) {
+                const textColor = isDark ? '#94a3b8' : '#475569';
+                const gridColor = isDark ? '#334155' : '#f1f5f9';
+                window.myCharts.forEach(chart => {
+                    chart.options.scales.x.ticks.color = textColor;
+                    chart.options.scales.y.ticks.color = textColor;
+                    chart.options.scales.y.grid.color = gridColor;
+                    chart.update();
+                });
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            setTheme(!isDark);
+        });
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('dashboard-theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        setTheme(savedTheme === 'dark');
+
+        // Chart array for dynamic updates
+        window.myCharts = [];
+        
         {{ charts_js }}
     </script>
 </body>

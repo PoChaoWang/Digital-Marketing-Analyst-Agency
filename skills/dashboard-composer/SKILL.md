@@ -171,22 +171,30 @@ Composer MUST return:
 
 ---
 
-## Output Format
+## Output Format (v2.0 Insight-Centric Schema)
 
-Composer MUST output strictly structured JSON:
+Composer MUST output strictly structured JSON conforming to version 2.0:
+
 {
-  "pages": [
+  "version": "2.0",
+  "title": "Marketing Intelligence Report",
+  "executive_summary": "High level summary...",
+  "sections": [
     {
-      "page_title": "",
-      "page_intent": "",
-      "charts": [
+      "section_title": "Primary Performance Drivers",
+      "insights": [
         {
-          "chart_type": "",
-          "metrics": [],
-          "dimensions": [],
-          "source_reference": "",
-          "title": "",
-          "rationale": ""
+          "finding": "Meta spend increased 35% while ROAS decreased 18%",
+          "business_impact": "Marketing efficiency is deteriorating, increasing CPA across the board.",
+          "decision_signal": "Review campaign targeting",
+          "recommendation": "Audit audience segments and creative performance",
+          "visualizations": [
+            {
+              "type": "line_chart",
+              "title": "Spend vs ROAS Correlation",
+              "data": {}
+            }
+          ]
         }
       ]
     }
