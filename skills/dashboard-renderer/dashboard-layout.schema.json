@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/dashboard-layout.schema.json",
+  "title": "Dashboard Specification Schema",
+  "description": "The contract between Dashboard Composer and Dashboard Renderer.",
+  "type": "object",
+  "required": ["title", "layout", "pages"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Main title of the dashboard"
+    },
+    "layout": {
+      "type": "string",
+      "enum": ["hero-grid", "one-column", "two-column"],
+      "description": "Overall layout strategy for the dashboard"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "generated_at": { "type": "string", "format": "date-time" },
+        "analysis_ref": { "type": "string" }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["page_title", "page_intent", "widgets"],
+        "properties": {
+          "page_title": { "type": "string" },
+          "page_intent": { "type": "string", "enum": ["overview", "diagnosis", "breakdown"] },
+          "widgets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type", "title", "data"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["kpi_card", "line_chart", "bar_chart"]
+                },
+                "title": { "type": "string" },
+                "metric": { "type": "string" },
+                "dimensions": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "source_reference": { "type": "string", "description": "ID of the insight or signal that triggered this widget" },
+                "rationale": { "type": "string", "description": "Why this widget was chosen" },
+                "data": {
+                  "type": "object",
+                  "description": "Polymorphic data structure depending on widget type"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
