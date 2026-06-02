@@ -1,0 +1,27 @@
+adapter:
+  id: google-sheets-mcp
+  protocol: mcp
+  server: "@modelcontextprotocol/server-google-sheets"
+  
+capabilities:
+  - name: create_spreadsheet
+    permission: write
+    requires_approval: false
+    
+  - name: write_values
+    permission: write
+    requires_approval: true   # 走你現有的 approval-flow.md
+    
+  - name: create_chart
+    permission: write
+    requires_approval: false
+    
+  - name: format_cells
+    permission: write
+    requires_approval: false
+
+environment:
+  test:
+    spreadsheet_id: "${TEST_SHEET_ID}"   # 對接 environment-gate.md
+  production:
+    spreadsheet_id: "${PROD_SHEET_ID}"
