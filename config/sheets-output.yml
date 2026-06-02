@@ -1,0 +1,30 @@
+# MVP：固定指定 Sheet 目標
+# AI 讀取這個檔案來決定要寫到哪裡
+
+output:
+  spreadsheet_id: "1D4Fj7tTp4tS-O2Sm34IDdkcCVy8TWMTiydtBfTyfBxg"
+  
+  tabs:
+    raw_data:
+      name: "360 Table"           # 寫入 360 table 的 tab 名稱
+      source: "exports/360_table.csv"
+      overwrite: true             # 每次執行是否清空再寫入
+      freeze_header: true
+
+  # AI 建立圖表時，會新增額外 tab，不影響 raw_data
+  ai_generated_tabs:
+    prefix: "Chart_"              # AI 建立的 tab 都用此前綴，方便識別
+    allow_create: true
+    allow_delete: false           # 安全閘：AI 不能刪除 tab
+
+  dashboard:
+    enabled: true
+    mode: "spec_only"             # spec_only | create | update
+    dsl_source: "skills/dashboard-planning/examples/executive-dashboard.dsl.yml"
+    implementation_spec_out: "output/google-sheets-dashboard-spec.yml"
+    tabs:
+      dashboard: "Dashboard"
+      filters: "Filter_Control"
+      data: "Dashboard_Data"
+      raw_data: "360 Table"
+    allow_live_write: false        # set true only when user explicitly asks and tools/credentials are ready
