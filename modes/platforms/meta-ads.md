@@ -6,7 +6,7 @@
 
 先讀 `modes/_shared.md` 與任務對應的 `modes/analyses/`。使用可用且通過 Environment Gate 的 Meta Ads MCP tools 讀取資料；不要假設實際 MCP tool 名稱。
 
-如果資料中有 `ad_format`、`ad_format_label`、campaign/ad naming code 或 creative code，先讀 `docs/GLOSSARY.md` 做名詞對照。常見 code：
+如果資料中有 `ad_format`、`ad_format_label`、campaign/ad naming code 或 creative code，先讀 `reference/GLOSSARY.md` 做名詞對照。常見 code：
 
 - `car`：Carousel Ads
 - `img`：Image Ads

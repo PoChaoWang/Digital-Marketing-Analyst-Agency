@@ -147,7 +147,7 @@ GA4_REFRESH_TOKEN=     # OAuth 授權流程取得
 ────────────
 下一步：[根據狀態給出建議，例如「可以開始跑分析」或「請先補完待填欄位」]
 
-提醒：docs/GLOSSARY.md 已有基本術語定義，有需要可自行新增或請 agent 協助補充。
+提醒：reference/GLOSSARY.md 已有基本術語定義，有需要可自行新增或請 agent 協助補充。
 ```
 
 ---

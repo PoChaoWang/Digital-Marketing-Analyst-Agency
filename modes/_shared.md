@@ -39,7 +39,7 @@
 
 conversion / revenue / CVR / CPA / ROAS / ROI 一律以 GA4 為 source of truth。
 平台端 conversions / revenue 只做差異檢查，不作為主要成效判斷。
-指標定義見 `docs/GLOSSARY.md`。
+指標定義見 `reference/GLOSSARY.md`。
 
 ## Output Checklist
 每份分析輸出必須包含：

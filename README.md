@@ -152,7 +152,7 @@ This repo separates analysis rules into layers so they are easier to maintain.
 - `skills/ads-analysis/SKILL.md`: the analysis workflow, including which files to read first, how to choose data sources, and how to output results.
 - `modes/analyses/`: defines what type of analysis is being run.
 - `modes/platforms/`: defines which platform the data comes from and what to watch for during interpretation.
-- `docs/GLOSSARY.md`: term and abbreviation reference.
+- `reference/GLOSSARY.md`: term and abbreviation reference.
 - `templates/`: report formats.
 
 ### How the Agent Chooses Modes
@@ -207,7 +207,7 @@ modes/platforms/line-ads.md
 
 Also consider:
 
-- Adding LINE Ads common terms to `docs/GLOSSARY.md`.
+- Adding LINE Ads common terms to `reference/GLOSSARY.md`.
 - Adding LINE Ads CSV column detection to `connectors/manual-csv.adapter.yml`.
 - Adding a LINE Ads data source setting to `config/data-sources.yml`.
 
@@ -219,7 +219,7 @@ Choose the file based on what you want to change:
 - To change shared metric formulas: edit `modes/_shared.md`.
 - To change performance summary, period comparison, or cross-channel analysis logic: edit `modes/analyses/`.
 - To change platform interpretation for Google Ads, Meta Ads, GA4, or LINE Ads: edit `modes/platforms/`.
-- To change terms and abbreviations: edit `docs/GLOSSARY.md`.
+- To change terms and abbreviations: edit `reference/GLOSSARY.md`.
 - To change report appearance: edit `templates/`.
 
 When changing logic:
@@ -372,9 +372,9 @@ How to modify it:
 - `CLAUDE.md`: main agent operating rules.
 - `policies/`: split policy files referenced by `CLAUDE.md`.
 - `DATA_CONTRACT.md`: data layering and commit rules.
-- `docs/MCP_SETUP.md`: MCP and data source safety rules.
-- `docs/GLOSSARY.md`: glossary.
-- `docs/GOOGLE_SHEETS_REPORTING.md`: Google Sheets reporting workflow.
+- `reference/MCP_SETUP.md`: MCP and data source safety rules.
+- `reference/GLOSSARY.md`: glossary.
+- `reference/GOOGLE_SHEETS_REPORTING.md`: Google Sheets reporting workflow.
 - `config/recurring-tasks.yml`: recurring analysis task table.
 - `config/priority-overrides.example.yml`: source priority override example.
 - `sql/build_360_table.sql`: readable SQL for paid media union, source priority, dedupe, and GA4 left join.

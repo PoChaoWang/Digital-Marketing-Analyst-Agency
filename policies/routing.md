@@ -53,7 +53,7 @@
 |------|---------|
 | 任務涉及 period compare、360 table、前後比較、跨期分析 | `policies/recipe-runner-policy.md`、`workflows/360-table-workflow.md` |
 | 任務涉及任何 campaign / budget / bid / targeting / creative / tracking / status 寫入 | `policies/approval-flow.md` |
-| 遇到不認識的縮寫或術語 | `docs/GLOSSARY.md`（找不到的術語標記為 `unknown term`） |
+| 遇到不認識的縮寫或術語 | `reference/GLOSSARY.md`（找不到的術語標記為 `unknown term`） |
 | 沒有 native MCP 的資料來源（非 Google Ads / Meta Ads / GA4 MCP） | 通過 Environment Gate 後，依 `config/data-sources.yml` allowlist 確認可用來源 |
 
 **遇到不認識的縮寫或是術語:** 不要亂猜，跟使用者做詢問，有必要的話加入到 glossary。

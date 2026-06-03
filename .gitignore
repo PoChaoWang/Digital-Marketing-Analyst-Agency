@@ -42,6 +42,6 @@ __pycache__/
 # Personal notes and scratchpads
 prompt.md
 note.md
-docs/DASHBOARD_ARCHITECTURE_PLAN.md
+reference/DASHBOARD_ARCHITECTURE_PLAN.md
 
-docs/MVP_VALIDATION_SUMMARY.md
+reference/MVP_VALIDATION_SUMMARY.md

@@ -35,7 +35,7 @@
 - `scripts/*`
 - `workflows/*`
 - `templates/*`
-- `docs/*`
+- `reference/*`
 - `profile.example/*`
 - `output/.gitkeep`
 - `tmp/recipe-results/.gitkeep`
