@@ -36,6 +36,32 @@
 
 ### Decision Log
 
+## Analysis Plan
+
+* 問題類型（Intent）:
+* 分析框架依據:
+* 資料範圍:
+* 核心問題:
+  1.
+  2.
+  3.
+
+## Intent-Specific Analysis
+
+<!-- 依 intent 類型填入對應內容，其餘留空 -->
+
+<!-- ===== period_comparison ===== -->
+<!-- 區間確認、Campaign 層級摘要、Creative 層級摘要 -->
+
+<!-- ===== performance_drop ===== -->
+<!-- 問題定位摘要、區間確認、Campaign 層級摘要、Creative 層級摘要、下滑歸因標記 -->
+
+<!-- ===== ab_test ===== -->
+<!-- 測試定義摘要、區間確認、整體指標比較、主要判斷指標深入比較 -->
+
+<!-- ===== unknown ===== -->
+<!-- 通用邏輯說明、使用者確認記錄 -->
+
 ## Analysis Output Schema
 
 ### Insights
