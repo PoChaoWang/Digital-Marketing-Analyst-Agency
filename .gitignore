@@ -1,7 +1,7 @@
 # --- System Layer (Tracked) ---
 # Backlog capabilities and Mock MCP are part of the system logic
-!modes/backlog/*
-!test/mock-mcp/*
+modes/backlog/*
+test/mock-mcp/*
 
 # --- User Layer (Ignored) ---
 # Secrets and private credentials
