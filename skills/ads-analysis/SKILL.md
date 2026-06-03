@@ -23,6 +23,60 @@
 
 ---
 
+## Intent Classification
+
+Preflight 完成後，執行分析前，必須先完成 Intent Classification。
+
+### 步驟
+
+**1. 判斷問題類型**
+
+根據使用者的問題，判斷屬於以下哪種 intent：
+
+| Intent | 觸發條件範例 | Reference 檔案 |
+|--------|------------|---------------|
+| `period_comparison` | 前後期比較、某段時間的成效變化、WoW / MoM | `reference/period-comparison.md` |
+| `performance_drop` | 為什麼下滑、原因分析、成效異常 | `reference/performance-drop.md` |
+| `ab_test` | A/B testing 結果、實驗分析、哪個版本比較好 | `reference/ab-test.md` |
+| `unknown` | 無法對應以上任何類型 | 無 reference，見下方 unknown 流程 |
+
+一個問題只對應一個 intent。若問題橫跨多個類型（例如「A/B test 前後期比較」），以最核心的分析目的為準，並在 Analysis Plan 說明理由。
+
+**2. 載入 Reference**
+
+確認 intent 後，載入對應的 `reference/` 檔案。Reference 定義了該類型分析應回答的核心問題與分析框架，必須作為執行依據。
+
+若 reference 檔案不存在（尚未建立），視同 `unknown` 處理。
+
+**3. 宣告 Analysis Plan**
+
+在回覆開頭輸出 Analysis Plan，格式如下：
+
+```
+## Analysis Plan
+
+- **問題類型**：{intent}
+- **分析框架依據**：{reference 檔案路徑} / 通用邏輯（無 reference）
+- **核心問題**：本次分析將回答以下問題：
+  1. {問題 1}
+  2. {問題 2}
+  ...
+- **資料範圍**：{平台、時間區間、campaign 範圍}
+```
+
+### Unknown Intent 流程
+
+當 intent 為 `unknown` 時：
+
+1. 以通用邏輯推論使用者的問題目的，說明推論依據。
+2. 輸出 Analysis Plan，標明「無 reference 支援，以通用邏輯執行」。
+3. **停止，等待使用者確認** Analysis Plan 後才繼續執行。
+4. 執行完成後，在 Analysis Trace 標記 `intent: unknown`，建議使用者事後補充對應的 reference 檔案。
+
+有 reference 支援的 intent，宣告 Analysis Plan 後直接進入執行，不需等待確認。
+
+---
+
 ## Recipe Selection
 
 依任務類型選擇對應 recipe：
@@ -61,6 +115,8 @@ Analysis Trace 必須可供使用者審閱，記錄：
 - Preflight 結果
 - Environment Gate 結果
 - Business context 狀態（provided / not provided）
+- **Intent classification 結果**：判斷的 intent 類型與依據
+- **Reference 載入狀態**：使用的 reference 檔案路徑，或標記「無 reference / unknown intent」
 - 本次載入的 analysis mode 與 platform mode
 - 使用的 recipe 與 script
 - 資料來源選擇依據與 source_type
@@ -73,6 +129,16 @@ Analysis Trace 必須可供使用者審閱，記錄：
 ---
 
 ## Output Rules
+
+### 模板使用
+
+所有分析報告必須以 `templates/analysis-output.md` 為基礎產出，不得自行定義報告結構。
+
+填寫規則：
+- `## Analysis Plan`：依 Intent Classification 結果填入
+- `## Intent-Specific Analysis`：依 intent 類型填入對應內容，其他 intent 的 comment placeholder 移除
+- `## Analysis Output Schema`：必須填寫，供 dashboard-composer 解析；欄位名稱與結構不得修改
+- 其餘共用區塊（Executive Summary、Key Findings、Prioritized Actions 等）正常填寫
 
 ### 檔案位置與命名
 
